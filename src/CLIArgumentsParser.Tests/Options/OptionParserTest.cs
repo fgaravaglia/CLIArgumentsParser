@@ -21,10 +21,10 @@ namespace CLIArgumentsParser.Tests.Options
 		{
 			//************* GIVEN
 			var test = new OptionDefinitionAttribute("s", "singleOutput", description: @"manage output as unique file instead to split it into several ones");
-			this._Parser = new OptionParser(test);
+			this._Parser = new OptionParser(test, typeof(bool));
 
 			//************* WHEN
-			this._Parser.Parse("-t", typeof(bool));
+			this._Parser.Parse("--t");
 
 			//************* ASSERT
 		}
@@ -35,10 +35,10 @@ namespace CLIArgumentsParser.Tests.Options
 		{
 			//************* GIVEN
 			var test = new OptionDefinitionAttribute("s", "singleOutput", description: @"manage output as unique file instead to split it into several ones");
-			this._Parser = new OptionParser(test);
+			this._Parser = new OptionParser(test, typeof(bool));
 
 			//************* WHEN
-			var returnedValue = this._Parser.Parse("-s", typeof(bool));
+			var returnedValue = this._Parser.Parse("--s");
 
 			//************* ASSERT
 			Assert.IsNotNull(returnedValue);
@@ -52,10 +52,10 @@ namespace CLIArgumentsParser.Tests.Options
 		{
 			//************* GIVEN
 			var test = new OptionDefinitionAttribute("s", "singleOutput", description: @"manage output as unique file instead to split it into several ones");
-			this._Parser = new OptionParser(test);
+			this._Parser = new OptionParser(test, typeof(bool));
 
 			//************* WHEN
-			var returnedValue = this._Parser.Parse("-singleOutput", typeof(bool));
+			var returnedValue = this._Parser.Parse("--singleOutput");
 
 			//************* ASSERT
 			Assert.IsNotNull(returnedValue);
@@ -69,10 +69,10 @@ namespace CLIArgumentsParser.Tests.Options
 		{
 			//************* GIVEN
 			var test = new OptionDefinitionAttribute("v", "verbosity", description: @"manage output as unique file instead to split it into several ones", mandatory: false, defaultValue: "DEFVAL");
-			this._Parser = new OptionParser(test);
+			this._Parser = new OptionParser(test, typeof(string));
 
 			//************* WHEN
-			var returnedValue = this._Parser.Parse("-v MYVERBOSE", typeof(string));
+			var returnedValue = this._Parser.Parse("--v=MYVERBOSE");
 
 			//************* ASSERT
 			Assert.IsNotNull(returnedValue);
@@ -86,15 +86,45 @@ namespace CLIArgumentsParser.Tests.Options
 		{
 			//************* GIVEN
 			var test = new OptionDefinitionAttribute("v", "verbosity", description: @"manage output as unique file instead to split it into several ones", mandatory: false, defaultValue: "DEFVAL");
-			this._Parser = new OptionParser(test);
+			this._Parser = new OptionParser(test, typeof(string));
 
 			//************* WHEN
-			var returnedValue = this._Parser.Parse("-v", typeof(string));
+			var returnedValue = this._Parser.Parse("--v");
 
 			//************* ASSERT
 			Assert.IsNotNull(returnedValue);
 			Assert.IsInstanceOfType(returnedValue, typeof(string));
 			Assert.AreEqual("DEFVAL", (string)returnedValue);
+		}
+
+		[TestMethod]
+		[TestCategory(BaseUnitTest.UNIT)]
+		public void ParseOptionWithArgumentsAndLOV_ReturnsTheValueIfIsValid()
+		{
+			//************* GIVEN
+			var test = new LOVOptionDefinitionAttribute("v", "verbosity", description: @"manage output as unique file instead to split it into several ones", mandatory: false, values: new string[] { "A", "B", "C" });
+			this._Parser = new OptionParser(test, typeof(string));
+
+			//************* WHEN
+			var returnedValue = this._Parser.Parse("--v=A");
+
+			//************* ASSERT
+			Assert.IsNotNull(returnedValue);
+			Assert.IsInstanceOfType(returnedValue, typeof(string));
+			Assert.AreEqual("A", (string)returnedValue);
+		}
+
+		[TestMethod]
+		[TestCategory(BaseUnitTest.UNIT)]
+		[ExpectedException(typeof(InvalidCLIArgumentException))]
+		public void ParseOptionWithArgumentsAndLOV_ThrowsExpcetionIfValueIsNotValid()
+		{
+			//************* GIVEN
+			var test = new LOVOptionDefinitionAttribute("v", "verbosity", description: @"manage output as unique file instead to split it into several ones", mandatory: false, values: new string[] { "A", "B", "C" });
+			this._Parser = new OptionParser(test, typeof(string));
+
+			//************* WHEN
+			var returnedValue = this._Parser.Parse("--v=DDDDDD");
 		}
 	}
 }

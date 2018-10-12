@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using CLIArgumentsParser.Core.Options;
 
 namespace CLIArgumentsParser.Core.Verbs
 {
 	/// <summary>
 	/// Class to map a simple verb
 	/// </summary>
-	public class Verb
+	internal class Verb
 	{
 		/// <summary>
 		/// Name of verb
@@ -19,6 +17,10 @@ namespace CLIArgumentsParser.Core.Verbs
 		/// Name of verb
 		/// </summary>
 		public string HelpText { get; private set; }
+		/// <summary>
+		/// Options of the verb
+		/// </summary>
+		public List<Option> Options { get; private set; }
 
 		/// <summary>
 		/// Default Constructor
@@ -32,6 +34,7 @@ namespace CLIArgumentsParser.Core.Verbs
 			if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException(nameof(helpText));
 			this.Name = name;
 			this.HelpText = helpText;
+			this.Options = new List<Option>();
 		}
 		/// <summary>
 		/// Instances the entity from its definition stored in custom attribute
@@ -45,6 +48,14 @@ namespace CLIArgumentsParser.Core.Verbs
 
 			var opt = new Verb(attribute.Name, attribute.HelpText);
 			return opt;
+		}
+		/// <summary>
+		/// Adds a new option
+		/// </summary>
+		/// <param name="attribute"></param>
+		internal void AddOptionFromAttribute(OptionDefinitionAttribute attribute)
+		{
+			this.Options.Add(Option.FromAttribute(attribute));
 		}
 
 	}

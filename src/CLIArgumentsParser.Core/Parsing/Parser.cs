@@ -121,7 +121,7 @@ namespace CLIArgumentsParser.Core
 			var localOptions = new List<KeyValuePair<PropertyInfo, Option>>();
 			optionDefinitions.ToList().ForEach(x =>
 			{
-				var model = new OptionParser(x.Value).MapToModel();
+				var model = new OptionParser(x.Value, typeof(T)).MapToModel();
 				localOptions.Add(new KeyValuePair<PropertyInfo, Option>(x.Key, (Option)model));
 			});
 			options = localOptions;
@@ -129,13 +129,14 @@ namespace CLIArgumentsParser.Core
 			var localVerbs = new List<KeyValuePair<PropertyInfo, Verb>>();
 			verbDefinitions.ToList().ForEach(x =>
 			{
-				var model = new VerbParser(x.Value).MapToModel();
+				var model = new VerbParser(x.Value, typeof(T)).MapToModel();
 				localVerbs.Add(new KeyValuePair<PropertyInfo, Verb>(x.Key, (Verb)model));
 			});
 			verbs = localVerbs;
 
 			foreach (var arg in args)
 			{
+			// check if we are facing verb or option
 				// get the code form the string representation of the argument
 				var code = arg.Split(' ')[0].Trim();
 				if (code.StartsWith("-"))
@@ -150,8 +151,8 @@ namespace CLIArgumentsParser.Core
 					var p = verbDefinitions.Single(x => x.Value.Name == code).Key;
 					var verbDefinition = verbDefinitions.Single(x => x.Value.Name == code).Value;
 					// parse the verb 
-					var parser = new VerbParser(verbDefinition);
-					var optionValue = parser.Parse(arg, p.PropertyType);
+					var parser = new VerbParser(verbDefinition, p.PropertyType);
+					var optionValue = parser.Parse(arg);
 					// set the proper value
 					p.SetValue(parsedArguments, optionValue);
 				}
@@ -161,8 +162,8 @@ namespace CLIArgumentsParser.Core
 					var p = optionDefinitions.Single(x => x.Value.Code == code || x.Value.LongCode == code).Key;
 					var optionDefinition = optionDefinitions.Single(x => x.Value.Code == code || x.Value.LongCode == code).Value;
 					// parse the option
-					var parser = new OptionParser(optionDefinition);
-					var optionValue = parser.Parse(arg, p.PropertyType);
+					var parser = new OptionParser(optionDefinition, p.PropertyType);
+					var optionValue = parser.Parse(arg);
 					// set the proper value
 					p.SetValue(parsedArguments, optionValue);
 				}

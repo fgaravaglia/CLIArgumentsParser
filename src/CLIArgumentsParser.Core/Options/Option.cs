@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace CLIArgumentsParser.Core.Options
 {
@@ -29,6 +30,15 @@ namespace CLIArgumentsParser.Core.Options
 		/// Default value to apply to option
 		/// </summary>
 		public object DefaultValue { get; private set; }
+		/// <summary>
+		/// Type of option value
+		/// </summary>
+		public Type ValueType { get; private set; }
+		/// <summary>
+		/// Code of the option, without option initializer char
+		/// </summary>
+		/// <example>o, src, i</example>
+		public List<string> AvailableValues { get; private set; }
 
 		/// <summary>
 		/// Default Constructor
@@ -48,13 +58,15 @@ namespace CLIArgumentsParser.Core.Options
 			this.Description = description;
 			this.Mandatory = false;
 			this.DefaultValue = null;
+			this.AvailableValues = new List<string>();
 		}
+
 		/// <summary>
 		/// Instances the entity from its definition stored in custom attribute
 		/// </summary>
 		/// <param name="attribute"></param>
 		/// <exception cref="System.ArgumentException">Thrown if one of the params is null</exception>
-		internal static Option FromAttribute(OptionDefinitionAttribute attribute)
+		static Option MapFromAttribute(OptionDefinitionAttribute attribute)
 		{
 			if (attribute == null)
 				throw new ArgumentNullException(nameof(attribute));
@@ -64,6 +76,45 @@ namespace CLIArgumentsParser.Core.Options
 			opt.DefaultValue = attribute.DefaultValue;
 
 			return opt;
+		}
+
+		/// <summary>
+		/// Instances the entity from its definition stored in custom attribute
+		/// </summary>
+		/// <param name="attribute"></param>
+		/// <exception cref="System.ArgumentException">Thrown if one of the params is null</exception>
+		internal static Option FromAttribute(OptionDefinitionAttribute attribute)
+		{
+			var opt = MapFromAttribute(attribute);
+
+			if (attribute is LOVOptionDefinitionAttribute)
+				return FromLOVAttribute((LOVOptionDefinitionAttribute)attribute);
+
+			return opt;
+		}
+		/// <summary>
+		/// Instances the entity from its definition stored in custom attribute
+		/// </summary>
+		/// <param name="attribute"></param>
+		/// <exception cref="System.ArgumentException">Thrown if one of the params is null</exception>
+		internal static Option FromLOVAttribute(LOVOptionDefinitionAttribute attribute)
+		{
+			var opt = MapFromAttribute(attribute);
+			attribute.AvailableValues.ForEach(x => opt.AvailableValues.Add(x));
+			return opt;
+		}
+		/// <summary>
+		/// sets the potperty type marked by this option
+		/// </summary>
+		/// <param name="target"></param>
+		/// <returns></returns>
+		internal Option OnTargetProperty(Type target)
+		{
+			if (target == null)
+				throw new ArgumentNullException(nameof(target));
+
+			this.ValueType = target;
+			return this;
 		}
 	}
 }

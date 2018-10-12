@@ -34,7 +34,7 @@ namespace CLIArgumentsParser.Tests.Parsing
 		public void ParsingNotExpectedArgumentsThrowsException()
 		{
 			//******** GIVEN
-			string[] arguments = new string[] { "-unexpectedOption" };
+			string[] arguments = new string[] { "--unexpectedOption" };
 			Exception thrownEx = null;
 
 			//******** WHEN
@@ -44,8 +44,6 @@ namespace CLIArgumentsParser.Tests.Parsing
 			thrownEx = this._Parser.GetLastError();
 			Assert.IsNotNull(thrownEx, "Expected an exception at this stage");
 			Assert.IsInstanceOfType(thrownEx, typeof(InvalidOperationException));
-			Assert.IsTrue(thrownEx.Message.ToLowerInvariant().StartsWith("Unable to find an option of verb with name unexpectedOption".ToLowerInvariant()),
-						$"Wrong exception message: found <{thrownEx.Message}>");
 		}
 
 		#region Option Tests
@@ -55,7 +53,7 @@ namespace CLIArgumentsParser.Tests.Parsing
 		public void ParsingNotMandatoryOptionByCode_FillRelatedProperty()
 		{
 			//******** GIVEN
-			string[] arguments = new string[] { "-s" };
+			string[] arguments = new string[] { "--s" };
 			Exception thrownEx = null;
 
 			//******** WHEN
@@ -76,7 +74,7 @@ namespace CLIArgumentsParser.Tests.Parsing
 		public void ParsingNotMandatoryOptionByLongCode_FillRelatedProperty()
 		{
 			//******** GIVEN
-			string[] arguments = new string[] { "-singleOutput" };
+			string[] arguments = new string[] { "--singleOutput" };
 			Exception thrownEx = null;
 
 			//******** WHEN
@@ -97,7 +95,7 @@ namespace CLIArgumentsParser.Tests.Parsing
 		public void ParsingOptionWithArguments_FillRelatedProperty()
 		{
 			//******** GIVEN
-			string[] arguments = new string[] { "-v MYVERBOSITY" };
+			string[] arguments = new string[] { "--v MYVERBOSITY" };
 			Exception thrownEx = null;
 
 			//******** WHEN
@@ -118,7 +116,7 @@ namespace CLIArgumentsParser.Tests.Parsing
 		public void ParsingOptionWithArgumentsAndDefault_FillRelatedProperty()
 		{
 			//******** GIVEN
-			string[] arguments = new string[] { "-v" };
+			string[] arguments = new string[] { "--v" };
 			Exception thrownEx = null;
 
 			//******** WHEN
@@ -139,7 +137,7 @@ namespace CLIArgumentsParser.Tests.Parsing
 		public void ParsingMandatoryOptionWithArgumentsAndDefault_FillRelatedProperty()
 		{
 			//******** GIVEN
-			string[] arguments = new string[] { "-v" };
+			string[] arguments = new string[] { "--v" };
 			Exception thrownEx = null;
 
 			//******** WHEN
@@ -160,7 +158,7 @@ namespace CLIArgumentsParser.Tests.Parsing
 		public void ParsingMandatoryOptionWithArgumentsAndDefault_ThrowsExceptionIfMissing()
 		{
 			//******** GIVEN
-			string[] arguments = new string[] { "-singleOutput" };
+			string[] arguments = new string[] { "--singleOutput" };
 			Exception thrownEx = null;
 
 			//******** WHEN

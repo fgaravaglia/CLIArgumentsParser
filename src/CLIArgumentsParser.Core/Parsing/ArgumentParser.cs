@@ -1,42 +1,50 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace CLIArgumentsParser.Core.Parsing
 {
 	internal abstract class ArgumentParser<Tattribute, Tmodel> where Tattribute : Attribute
 	{
 		readonly protected Tattribute _Attribute;
+		readonly protected TokenGenerator _Tokenizer;
+		readonly protected Type _TargetType;
 
-		protected ArgumentParser(Tattribute attribute)
+		protected Tmodel _Model;
+
+		protected ArgumentParser(Tattribute attribute, TokenGenerator tokenizer, Type targetType)
 		{
 			this._Attribute = attribute ?? throw new ArgumentNullException(nameof(Attribute));
+			this._Tokenizer = tokenizer ?? throw new ArgumentNullException(nameof(tokenizer));
+			this._TargetType = targetType ?? throw new ArgumentNullException(nameof(targetType));
 		}
 
 		/// <summary>
 		/// Parse argument (string) to obtain the value
 		/// </summary>
 		/// <param name="arg"></param>
-		/// <param name="targetReturnType"></param>
 		/// <returns>the parsed value</returns>
 		/// <exception cref="System.ArgumentException">Thrown if one of the params is null, empty or whitespace.</exception>
-		public object Parse(string arg, Type targetReturnType)
+		public object Parse(string arg)
 		{
 			if (string.IsNullOrWhiteSpace(arg)) throw new ArgumentException(nameof(arg));
-			if (targetReturnType == null)
-				throw new ArgumentNullException(nameof(targetReturnType));
 
-			var parts = arg.Split(' ');
-			var key = parts[0].Trim().Remove(0, 1);
+			// get tokens 
+			var tokens = this._Tokenizer.TokenizeThisString(arg).ToList();
+			// validate names
+			foreach (var token in tokens)
+			{
+				string error;
+				if (!IsKeyValid(token.Name, out error))
+					throw new InvalidCLIArgumentException($"Invalid Argument {arg}: {error}", token.Name);
+			}
 
-			string error;
-			if (!IsKeyValid(key, out error))
-				throw new InvalidCLIArgumentException($"Invalid Argument {arg}: {error}", key);
-
-			var keyArguments = parts.Length > 1 ? parts[1] : null;
-			var returnValue = ParseFromKey(key, keyArguments, targetReturnType);
+			// obtain value
+			var returnValue = ParseFromTokens(tokens);
 
 			//check consistencey
-			if (returnValue != null && returnValue.GetType() != targetReturnType)
-				throw new InvalidOperationException($"Unable to convert {returnValue.GetType().FullName} into {targetReturnType.FullName} for argument {arg}");
+			if (returnValue != null && returnValue.GetType() != this._TargetType)
+				throw new InvalidOperationException($"Unable to convert {returnValue.GetType().FullName} into { this._TargetType.FullName} for argument {arg}");
 			return returnValue;
 		}
 		/// <summary>
@@ -55,11 +63,9 @@ namespace CLIArgumentsParser.Core.Parsing
 		/// <summary>
 		/// Executes the parse for the given key/arguments
 		/// </summary>
-		/// <param name="key"></param>
-		/// <param name="keyArguments"></param>
-		/// <param name="targetReturnType"></param>
 		/// <returns></returns>
-		protected abstract object ParseFromKey(string key, string keyArguments, Type targetReturnType);
+		protected abstract object ParseFromTokens(IEnumerable<Token> targetTokens);
+
 		/// <summary>
 		/// maps the definition of argument coming out from attribute into model
 		/// </summary>

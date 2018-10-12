@@ -1,5 +1,6 @@
 ﻿using System;
 using CLIArgumentsParser.Core;
+using CLIArgumentsParser.Core.Options;
 using CLIArgumentsParser.Core.Verbs;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -42,11 +43,20 @@ namespace CLIArgumentsParser.Tests.Parsing
 		public class TestArguments : CLIArguments
 		{
 			public CopyArguments Copy { get; set; }
+
+			public CopyFilesWith1MandatoryOption CopyWithArguments { get; set; }
 		}
 
 		[VerbDefinition("copy", "copy files from SRC to OUTPUT")]
 		public class CopyArguments : CLIArguments
 		{
+		}
+
+		[VerbDefinition("copy2", "copy files from SRC to OUTPUT")]
+		public class CopyFilesWith1MandatoryOption : CLIArguments
+		{
+			[OptionDefinition("src", "source", "source folder to use to copy files", mandatory: true)]
+			public string SrcFolder { get; set; }
 		}
 
 		#endregion
