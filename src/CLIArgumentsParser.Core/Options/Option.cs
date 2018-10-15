@@ -6,8 +6,17 @@ namespace CLIArgumentsParser.Core.Options
 	/// <summary>
 	/// Class to map a simple option
 	/// </summary>
-	internal class Option
+	public class Option
 	{
+		/// <summary>
+		/// char to use to start an option
+		/// </summary>
+		internal const string OPTION_IDENTIFIER = "--";
+		/// <summary>
+		/// char to use to separate key from value
+		/// </summary>
+		internal const string OPTION_VALUE_SEPARATOR = "=";
+
 		/// <summary>
 		/// Code of the option, without option initializer char
 		/// </summary>

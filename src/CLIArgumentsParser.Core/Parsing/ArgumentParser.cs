@@ -4,17 +4,18 @@ using System.Linq;
 
 namespace CLIArgumentsParser.Core.Parsing
 {
-	internal abstract class ArgumentParser<Tattribute, Tmodel> where Tattribute : Attribute
+	internal abstract class ModelParser<Tmodel>
 	{
-		readonly protected Tattribute _Attribute;
 		readonly protected TokenGenerator _Tokenizer;
 		readonly protected Type _TargetType;
 
 		protected Tmodel _Model;
 
-		protected ArgumentParser(Tattribute attribute, TokenGenerator tokenizer, Type targetType)
+		protected ModelParser(Tmodel model, TokenGenerator tokenizer, Type targetType)
 		{
-			this._Attribute = attribute ?? throw new ArgumentNullException(nameof(Attribute));
+			if(model == null)
+				throw new ArgumentNullException(nameof(model));
+			this._Model = model;
 			this._Tokenizer = tokenizer ?? throw new ArgumentNullException(nameof(tokenizer));
 			this._TargetType = targetType ?? throw new ArgumentNullException(nameof(targetType));
 		}
@@ -31,12 +32,24 @@ namespace CLIArgumentsParser.Core.Parsing
 
 			// get tokens 
 			var tokens = this._Tokenizer.TokenizeThisString(arg).ToList();
+
+			return Parse(tokens);
+		}
+		/// <summary>
+		/// PArses tokens to get the right value
+		/// </summary>
+		/// <param name="tokens"></param>
+		/// <returns></returns>
+		public object Parse(IEnumerable<Token> tokens)
+		{
+			if (tokens == null)
+				throw new ArgumentException(nameof(tokens));
 			// validate names
 			foreach (var token in tokens)
 			{
 				string error;
 				if (!IsKeyValid(token.Name, out error))
-					throw new InvalidCLIArgumentException($"Invalid Argument {arg}: {error}", token.Name);
+					throw new InvalidCLIArgumentException($"Invalid Argument {token.AsNaturalString()}: {error}", token.Name);
 			}
 
 			// obtain value
@@ -44,18 +57,9 @@ namespace CLIArgumentsParser.Core.Parsing
 
 			//check consistencey
 			if (returnValue != null && returnValue.GetType() != this._TargetType)
-				throw new InvalidOperationException($"Unable to convert {returnValue.GetType().FullName} into { this._TargetType.FullName} for argument {arg}");
+				throw new InvalidOperationException($"Unable to convert {returnValue.GetType().FullName} into { this._TargetType.FullName} for argument {String.Join(" ", tokens.Select(x => x.AsNaturalString()))}");
 			return returnValue;
 		}
-		/// <summary>
-		/// return the proper entity model for the current argument
-		/// </summary>
-		/// <returns>the model corresponding to target attribute</returns>
-		public object MapToModel()
-		{
-			return FromAttribute(this._Attribute);
-		}
-
 		/// <summary>
 		/// True if key is valid compared to attribute definition
 		/// </summary>
@@ -65,12 +69,5 @@ namespace CLIArgumentsParser.Core.Parsing
 		/// </summary>
 		/// <returns></returns>
 		protected abstract object ParseFromTokens(IEnumerable<Token> targetTokens);
-
-		/// <summary>
-		/// maps the definition of argument coming out from attribute into model
-		/// </summary>
-		/// <param name="attribute"></param>
-		/// <returns></returns>
-		protected abstract Tmodel FromAttribute(Tattribute attribute);
 	}
 }

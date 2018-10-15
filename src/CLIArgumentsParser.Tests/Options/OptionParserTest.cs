@@ -21,7 +21,7 @@ namespace CLIArgumentsParser.Tests.Options
 		{
 			//************* GIVEN
 			var test = new OptionDefinitionAttribute("s", "singleOutput", description: @"manage output as unique file instead to split it into several ones");
-			this._Parser = new OptionParser(test, typeof(bool));
+			this._Parser = new OptionParser(Option.FromAttribute(test).OnTargetProperty(typeof(bool)), typeof(bool));
 
 			//************* WHEN
 			this._Parser.Parse("--t");
@@ -35,7 +35,7 @@ namespace CLIArgumentsParser.Tests.Options
 		{
 			//************* GIVEN
 			var test = new OptionDefinitionAttribute("s", "singleOutput", description: @"manage output as unique file instead to split it into several ones");
-			this._Parser = new OptionParser(test, typeof(bool));
+			this._Parser = new OptionParser(Option.FromAttribute(test).OnTargetProperty(typeof(bool)), typeof(bool));
 
 			//************* WHEN
 			var returnedValue = this._Parser.Parse("--s");
@@ -52,7 +52,7 @@ namespace CLIArgumentsParser.Tests.Options
 		{
 			//************* GIVEN
 			var test = new OptionDefinitionAttribute("s", "singleOutput", description: @"manage output as unique file instead to split it into several ones");
-			this._Parser = new OptionParser(test, typeof(bool));
+			this._Parser = new OptionParser(Option.FromAttribute(test).OnTargetProperty(typeof(bool)), typeof(bool));
 
 			//************* WHEN
 			var returnedValue = this._Parser.Parse("--singleOutput");
@@ -69,7 +69,7 @@ namespace CLIArgumentsParser.Tests.Options
 		{
 			//************* GIVEN
 			var test = new OptionDefinitionAttribute("v", "verbosity", description: @"manage output as unique file instead to split it into several ones", mandatory: false, defaultValue: "DEFVAL");
-			this._Parser = new OptionParser(test, typeof(string));
+			this._Parser = new OptionParser(Option.FromAttribute(test).OnTargetProperty(typeof(string)), typeof(string));
 
 			//************* WHEN
 			var returnedValue = this._Parser.Parse("--v=MYVERBOSE");
@@ -86,7 +86,7 @@ namespace CLIArgumentsParser.Tests.Options
 		{
 			//************* GIVEN
 			var test = new OptionDefinitionAttribute("v", "verbosity", description: @"manage output as unique file instead to split it into several ones", mandatory: false, defaultValue: "DEFVAL");
-			this._Parser = new OptionParser(test, typeof(string));
+			this._Parser = new OptionParser(Option.FromAttribute(test).OnTargetProperty(typeof(string)), typeof(string));
 
 			//************* WHEN
 			var returnedValue = this._Parser.Parse("--v");
@@ -103,7 +103,7 @@ namespace CLIArgumentsParser.Tests.Options
 		{
 			//************* GIVEN
 			var test = new LOVOptionDefinitionAttribute("v", "verbosity", description: @"manage output as unique file instead to split it into several ones", mandatory: false, values: new string[] { "A", "B", "C" });
-			this._Parser = new OptionParser(test, typeof(string));
+			this._Parser = new OptionParser(Option.FromAttribute(test).OnTargetProperty(typeof(string)), typeof(string));
 
 			//************* WHEN
 			var returnedValue = this._Parser.Parse("--v=A");
@@ -121,7 +121,7 @@ namespace CLIArgumentsParser.Tests.Options
 		{
 			//************* GIVEN
 			var test = new LOVOptionDefinitionAttribute("v", "verbosity", description: @"manage output as unique file instead to split it into several ones", mandatory: false, values: new string[] { "A", "B", "C" });
-			this._Parser = new OptionParser(test, typeof(string));
+			this._Parser = new OptionParser(Option.FromAttribute(test).OnTargetProperty(typeof(string)), typeof(string));
 
 			//************* WHEN
 			var returnedValue = this._Parser.Parse("--v=DDDDDD");

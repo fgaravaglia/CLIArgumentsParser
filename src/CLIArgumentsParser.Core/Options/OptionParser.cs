@@ -5,11 +5,10 @@ using CLIArgumentsParser.Core.Parsing;
 
 namespace CLIArgumentsParser.Core.Options
 {
-	internal class OptionParser : ArgumentParser<OptionDefinitionAttribute, Option>
+	internal class OptionParser : ModelParser<Option>
 	{
-		internal OptionParser(OptionDefinitionAttribute attribute, Type targetType) : base(attribute, new TokenGenerator(new List<string>() { "--" }), targetType)
+		internal OptionParser(Option model, Type targetType) : base(model, new TokenGenerator(new List<string>() { "--" }), targetType)
 		{
-			this._Model = Option.FromAttribute(attribute).OnTargetProperty(targetType);
 		}
 
 		/// <summary>
@@ -19,7 +18,7 @@ namespace CLIArgumentsParser.Core.Options
 		{
 			errorMessage = string.Empty;
 
-			var keyWithoutIdentifier = key.StartsWith("--") ? key.Replace("--", "") : key;
+			var keyWithoutIdentifier = key.StartsWith(Option.OPTION_IDENTIFIER) ? key.Replace(Option.OPTION_IDENTIFIER, "") : key;
 			if (keyWithoutIdentifier.ToLowerInvariant() == this._Model.Code.ToLowerInvariant() || keyWithoutIdentifier.ToLowerInvariant() == this._Model.LongCode.ToLowerInvariant())
 				return true;
 
@@ -47,20 +46,12 @@ namespace CLIArgumentsParser.Core.Options
 			}
 
 			// if there is a default and no argument
-			if (String.IsNullOrWhiteSpace(targetTokens.ToList()[0].Value) && this._Attribute.DefaultValue != null)
-				return this._Attribute.DefaultValue;
+			if (String.IsNullOrWhiteSpace(targetTokens.ToList()[0].Value) && this._Model.DefaultValue != null)
+				return this._Model.DefaultValue;
 
 			// if option is there, this means option enabled
 			return true;
 		}
-		/// <summary>
-		/// maps the definition of argument coming out from attribute into model
-		/// </summary>
-		/// <param name="attribute"></param>
-		/// <returns></returns>
-		protected override Option FromAttribute(OptionDefinitionAttribute attribute)
-		{
-			return Option.FromAttribute(this._Attribute);
-		}
+
 	}
 }

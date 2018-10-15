@@ -46,9 +46,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CLIArguments.cs" />
+    <Compile Include="CLIUsageModel.cs" />
     <Compile Include="Options\LOVOptionDefinitionAttribute.cs" />
     <Compile Include="Options\OptionDefinitionAttribute.cs" />
     <Compile Include="Options\OptionDefinitionAttributeHelper.cs" />
+    <Compile Include="Parsing\ArgumentAggregator.cs" />
+    <Compile Include="Parsing\ArgumentModelAnalyzer.cs" />
     <Compile Include="Parsing\InvalidCLIArgumentException.cs" />
     <Compile Include="Parsing\ParserHelper.cs" />
     <Compile Include="Parsing\ArgumentParser.cs" />

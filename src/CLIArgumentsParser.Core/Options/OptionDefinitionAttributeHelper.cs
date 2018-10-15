@@ -11,7 +11,7 @@ namespace CLIArgumentsParser.Core.Options
 		{
 			var dictionary = new Dictionary<PropertyInfo, OptionDefinitionAttribute>();
 			var properties = targetType.GetProperties().ToList();
-			properties = properties.Where(x => x.CustomAttributes.Count(a => a.AttributeType == typeof(OptionDefinitionAttribute)) > 0).ToList();
+			properties = properties.Where(x => x.CustomAttributes.Count(a => a.AttributeType == typeof(OptionDefinitionAttribute) || a.AttributeType.BaseType == typeof(OptionDefinitionAttribute)) > 0).ToList();
 			properties.ForEach(p =>
 			{
 				var attribute = p.GetCustomAttribute<OptionDefinitionAttribute>();

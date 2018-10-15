@@ -95,7 +95,7 @@ namespace CLIArgumentsParser.Tests.Parsing
 		public void ParsingOptionWithArguments_FillRelatedProperty()
 		{
 			//******** GIVEN
-			string[] arguments = new string[] { "--v MYVERBOSITY" };
+			string[] arguments = new string[] { "--v=MYVERBOSITY" };
 			Exception thrownEx = null;
 
 			//******** WHEN

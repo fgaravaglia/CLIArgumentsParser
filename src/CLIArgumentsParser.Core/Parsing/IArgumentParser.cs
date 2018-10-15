@@ -18,9 +18,10 @@ namespace CLIArgumentsParser.Core.Parsing
 		/// <returns></returns>
 		object Parse(string arg);
 		/// <summary>
-		/// return the proper entity model for the current argument
+		/// Parses tokens to get the right value
 		/// </summary>
+		/// <param name="tokens"></param>
 		/// <returns></returns>
-		object MapToModel();
+		object Parse(IEnumerable<Token> tokens);
 	}
 }

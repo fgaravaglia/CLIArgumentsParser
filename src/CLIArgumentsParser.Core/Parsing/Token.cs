@@ -1,4 +1,5 @@
 ﻿using System;
+using CLIArgumentsParser.Core.Options;
 
 namespace CLIArgumentsParser.Core.Parsing
 {
@@ -42,7 +43,7 @@ namespace CLIArgumentsParser.Core.Parsing
 			{
 				Name = name,
 				Value = value,
-				Separator = "="
+				Separator = Option.OPTION_VALUE_SEPARATOR
 			};
 		}
 	}

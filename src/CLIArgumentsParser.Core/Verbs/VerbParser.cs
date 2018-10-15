@@ -6,21 +6,18 @@ using CLIArgumentsParser.Core.Parsing;
 
 namespace CLIArgumentsParser.Core.Verbs
 {
-	internal class VerbParser : ArgumentParser<VerbDefinitionAttribute, Verb>
+	internal class VerbParser : ModelParser<Verb>
 	{
 		/// <summary>
 		/// default constructor
 		/// </summary>
-		/// <param name="attribute"></param>
-		/// <param name="targetType"></param>
-		internal VerbParser(VerbDefinitionAttribute attribute, Type targetType) : base(attribute, new TokenGenerator(new List<string>() { "--" }), targetType)
+		internal VerbParser(Verb model, Type targetType) : base(model, new TokenGenerator(new List<string>() { "--" }), targetType)
 		{
-			this._Model = Verb.FromAttribute(attribute);
-			var optionDefinitions = OptionDefinitionAttributeHelper.ExtractPropertiesMarkedWithOptionAttribute(this._TargetType);
-			foreach (var opt in optionDefinitions)
-			{
-				this._Model.AddOptionFromAttribute(opt.Value);
-			}
+			//var optionDefinitions = OptionDefinitionAttributeHelper.ExtractPropertiesMarkedWithOptionAttribute(this._TargetType);
+			//foreach (var opt in optionDefinitions)
+			//{
+			//	this._Model.AddOptionFromAttribute(opt.Value, opt.Key.PropertyType);
+			//}
 		}
 
 		/// <summary>
@@ -65,7 +62,7 @@ namespace CLIArgumentsParser.Core.Verbs
 						throw new InvalidCLIArgumentException($"Unable to find option {token.Name} for verb {targetTokens.First().Name}", targetTokens.First().Name);
 					var targetProperty = optionDefinitions.Single(x => x.Value.Code == token.Name || x.Value.LongCode == token.Name).Key;
 					// parse the value
-					var optionParser = new OptionParser(attribute, targetProperty.PropertyType);
+					var optionParser = new OptionParser(Option.FromAttribute(attribute).OnTargetProperty(targetProperty.PropertyType), targetProperty.PropertyType);
 					var outputValue = optionParser.Parse(token.AsNaturalString());
 					// update the value
 					targetProperty.SetValue(returnValue, outputValue);
@@ -74,14 +71,5 @@ namespace CLIArgumentsParser.Core.Verbs
 			return returnValue;
 		}
 
-		/// <summary>
-		/// maps the definition of argument coming out from attribute into model
-		/// </summary>
-		/// <param name="attribute"></param>
-		/// <returns></returns>
-		protected override Verb FromAttribute(VerbDefinitionAttribute attribute)
-		{
-			return Verb.FromAttribute(this._Attribute);
-		}
 	}
 }

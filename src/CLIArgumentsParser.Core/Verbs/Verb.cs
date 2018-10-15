@@ -7,8 +7,13 @@ namespace CLIArgumentsParser.Core.Verbs
 	/// <summary>
 	/// Class to map a simple verb
 	/// </summary>
-	internal class Verb
+	public class Verb
 	{
+		/// <summary>
+		/// char to use to start a verb
+		/// </summary>
+		internal const string VERB_IDENTIFIER = "-";
+
 		/// <summary>
 		/// Name of verb
 		/// </summary>
@@ -53,10 +58,12 @@ namespace CLIArgumentsParser.Core.Verbs
 		/// Adds a new option
 		/// </summary>
 		/// <param name="attribute"></param>
-		internal void AddOptionFromAttribute(OptionDefinitionAttribute attribute)
+		/// <param name="propertyType"></param>
+		internal void AddOptionFromAttribute(OptionDefinitionAttribute attribute, Type propertyType)
 		{
-			this.Options.Add(Option.FromAttribute(attribute));
+			if (propertyType == null)
+				throw new ArgumentNullException(nameof(propertyType));
+			this.Options.Add(Option.FromAttribute(attribute).OnTargetProperty(propertyType));
 		}
-
 	}
 }

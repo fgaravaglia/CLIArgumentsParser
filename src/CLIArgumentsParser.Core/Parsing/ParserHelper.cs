@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using CLIArgumentsParser.Core.Parsing;
 
 namespace CLIArgumentsParser.Core
 {
@@ -14,33 +13,7 @@ namespace CLIArgumentsParser.Core
 		/// <returns></returns>
 		public static Parser DefaultParser()
 		{
-			Parser parser = new Parser()
-				.AdaptingCommandArguments(args =>
-				{
-					List<int> indexesAlreadyUsed = new List<int>();
-					List<string> rebuiltArguments = new List<string>();
-					foreach (var arg in args)
-					{
-						int index = Array.IndexOf(args, arg);
-						if (indexesAlreadyUsed.Contains(index))
-							continue;
-
-						if (arg.StartsWith("-"))
-						{
-							var option = arg;
-							if (index + 1 <= args.Length)
-							{
-								option += (" " + args[index + 1]);
-								indexesAlreadyUsed.Add(index + 1);
-							}
-							rebuiltArguments.Add(option);
-						}
-						else
-							rebuiltArguments.Add(arg);
-						indexesAlreadyUsed.Add(index);
-					}
-					return rebuiltArguments.ToArray();
-				});
+			Parser parser = new Parser();
 			return parser;
 		}
 	}

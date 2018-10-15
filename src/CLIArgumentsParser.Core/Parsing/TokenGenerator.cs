@@ -66,7 +66,7 @@ namespace CLIArgumentsParser.Core.Parsing
 			{
 				// get parts for token
 				var tokenParts = part.Split(new string[] { this._Splitter }, StringSplitOptions.None);
-				var tokenName = tokenParts[0];
+				var tokenName = tokenParts[0].Trim();
 				string tokenValue = tokenParts.Length == 2 ? tokenParts[1].Trim() : "";
 				// check consistency
 				if (tokenParts.Length != 1 && tokenParts.Length != 2)
