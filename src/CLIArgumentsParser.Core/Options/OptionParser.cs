@@ -7,7 +7,7 @@ namespace CLIArgumentsParser.Core.Options
 {
 	internal class OptionParser : ModelParser<Option>
 	{
-		internal OptionParser(Option model, Type targetType) : base(model, new TokenGenerator(new List<string>() { "--" }), targetType)
+		internal OptionParser(Option model) : base(model, new TokenGenerator(new List<string>() { Option.OPTION_IDENTIFIER }))
 		{
 		}
 

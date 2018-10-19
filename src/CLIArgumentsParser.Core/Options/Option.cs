@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace CLIArgumentsParser.Core.Options
 {
 	/// <summary>
 	/// Class to map a simple option
 	/// </summary>
-	public class Option
+	public class Option : ICLIArgumentModel
 	{
 		/// <summary>
 		/// char to use to start an option
@@ -23,14 +24,26 @@ namespace CLIArgumentsParser.Core.Options
 		/// <example>o, src, i</example>
 		public string Code { get; private set; }
 		/// <summary>
+		/// Type of option value
+		/// </summary>
+		public Type TargetType { get; private set; }
+		/// <summary>
+		/// Description of the option, like helper text
+		/// </summary>
+		public string HelpText { get; private set; }
+		/// <summary>
+		/// Gets the type of argument (Verb, Option)
+		/// </summary>
+		public string ArgumentType { get { return  "OPTION"; } }
+		/// <summary>
+		/// Gets the list of examples for the usages
+		/// </summary>
+		public IEnumerable<CLIUsageExample> Examples { get; private set; }
+		/// <summary>
 		/// Long Code of the option, without option initializer char
 		/// </summary>
 		/// <example>output, source, input</example>
 		public string LongCode { get; private set; }
-		/// <summary>
-		/// Description of the option, like helper text
-		/// </summary>
-		public string Description { get; private set; }
 		/// <summary>
 		/// TRUE if the option is mandatory
 		/// </summary>
@@ -39,10 +52,6 @@ namespace CLIArgumentsParser.Core.Options
 		/// Default value to apply to option
 		/// </summary>
 		public object DefaultValue { get; private set; }
-		/// <summary>
-		/// Type of option value
-		/// </summary>
-		public Type ValueType { get; private set; }
 		/// <summary>
 		/// Code of the option, without option initializer char
 		/// </summary>
@@ -64,10 +73,11 @@ namespace CLIArgumentsParser.Core.Options
 
 			this.Code = code;
 			this.LongCode = longCode;
-			this.Description = description;
+			this.HelpText = description;
 			this.Mandatory = false;
 			this.DefaultValue = null;
 			this.AvailableValues = new List<string>();
+			this.Examples = new List<CLIUsageExample>();
 		}
 
 		/// <summary>
@@ -86,7 +96,6 @@ namespace CLIArgumentsParser.Core.Options
 
 			return opt;
 		}
-
 		/// <summary>
 		/// Instances the entity from its definition stored in custom attribute
 		/// </summary>
@@ -122,7 +131,22 @@ namespace CLIArgumentsParser.Core.Options
 			if (target == null)
 				throw new ArgumentNullException(nameof(target));
 
-			this.ValueType = target;
+			this.TargetType = target;
+			return this;
+		}
+		/// <summary>
+		/// Adds the example
+		/// </summary>
+		/// <param name="example"></param>
+		/// <returns></returns>
+		internal Option AddExample(CLIUsageExample example)
+		{
+			if (example == null)
+				throw new ArgumentNullException(nameof(example));
+
+			var examples = this.Examples.ToList();
+			examples.Add(example);
+			this.Examples = examples;
 			return this;
 		}
 	}

@@ -58,6 +58,7 @@
     <Compile Include="Parsing\ParserTestOnOptions.cs" />
     <Compile Include="Parsing\TokenGeneratorTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Usages\StringBuilderUsagePrinterTest.cs" />
     <Compile Include="Verbs\VerbDefinitionAttributeHelperTest.cs" />
     <Compile Include="Verbs\VerbParserTest.cs" />
   </ItemGroup>

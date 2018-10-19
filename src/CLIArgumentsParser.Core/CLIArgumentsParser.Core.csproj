@@ -47,6 +47,8 @@
   <ItemGroup>
     <Compile Include="CLIArguments.cs" />
     <Compile Include="CLIUsageModel.cs" />
+    <Compile Include="CLUUsageExample.cs" />
+    <Compile Include="ICLIArgument.cs" />
     <Compile Include="Options\LOVOptionDefinitionAttribute.cs" />
     <Compile Include="Options\OptionDefinitionAttribute.cs" />
     <Compile Include="Options\OptionDefinitionAttributeHelper.cs" />
@@ -58,6 +60,9 @@
     <Compile Include="Parsing\IArgumentParser.cs" />
     <Compile Include="Parsing\Token.cs" />
     <Compile Include="Parsing\TokenGenerator.cs" />
+    <Compile Include="Usages\ConsoleUsagePrinter.cs" />
+    <Compile Include="Usages\StringBuilderUsagePrinter.cs" />
+    <Compile Include="Usages\UsagePrinter.cs" />
     <Compile Include="Verbs\Verb.cs" />
     <Compile Include="Verbs\VerbDefinitionAttribute.cs" />
     <Compile Include="Options\Option.cs" />

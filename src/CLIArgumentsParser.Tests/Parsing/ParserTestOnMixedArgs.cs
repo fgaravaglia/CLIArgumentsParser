@@ -27,7 +27,7 @@ namespace CLIArgumentsParser.Tests.Parsing
 		public void ParseVerbWithOptionsAnd2Options_WorksFine()
 		{
 			//******** GIVEN
-			string[] arguments = new string[] { @"-copy --src='C:\Temp\Pluto'", "--singleOutput" , "--v=WARN"};
+			string[] arguments = new string[] { @"/copy --src='C:\Temp\Pluto'", "--singleOutput" , "--v=WARN"};
 			Exception thrownEx = null;
 
 			//******** WHEN
@@ -49,7 +49,7 @@ namespace CLIArgumentsParser.Tests.Parsing
 		public void ParseConsoleArguments_WorksFine()
 		{
 			//******** GIVEN
-			string[] arguments = new string[] { "-copy", @"--src='C:\Temp\Pluto'", "--singleOutput", "--v=WARN" };
+			string[] arguments = new string[] { "/copy", @"--src='C:\Temp\Pluto'", "--singleOutput", "--v=WARN" };
 			Exception thrownEx = null;
 
 			//******** WHEN

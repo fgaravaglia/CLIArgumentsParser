@@ -17,7 +17,7 @@ namespace CLIArgumentsParser.Tests.Verbs
 		{
 			//************* GIVEN
 			var test = new VerbDefinitionAttribute("copy", "Copy all files from source to output fodler");
-			var parser = new VerbParser(Verb.FromAttribute(test), typeof(CopyArguments));
+			var parser = new VerbParser(Verb.FromAttribute(test).OnTargetProperty( typeof(CopyArguments)));
 
 			//************* WHEN
 			parser.Parse("del");
@@ -31,7 +31,7 @@ namespace CLIArgumentsParser.Tests.Verbs
 		{
 			//************* GIVEN
 			var test = new VerbDefinitionAttribute("copy", "Copy all files from source to output fodler");
-			var parser = new VerbParser(Verb.FromAttribute(test), typeof(CopyArguments));
+			var parser = new VerbParser(Verb.FromAttribute(test).OnTargetProperty(typeof(CopyArguments)));
 
 			//************* WHEN
 			var value = parser.Parse("-copy");
@@ -46,9 +46,9 @@ namespace CLIArgumentsParser.Tests.Verbs
 		{
 			//************* GIVEN
 			VerbDefinitionAttribute test = typeof(CopyFilesWith1MandatoryOption).GetCustomAttributes(typeof(VerbDefinitionAttribute), true).First() as VerbDefinitionAttribute;
-			var verbModel = Verb.FromAttribute(test);
+			var verbModel = Verb.FromAttribute(test).OnTargetProperty(typeof(CopyFilesWith1MandatoryOption));
 			verbModel.AddOptionFromAttribute(new OptionDefinitionAttribute("src", "source", "source folder to use to copy files", mandatory: true), typeof(string));
-			var parser = new VerbParser(verbModel, typeof(CopyFilesWith1MandatoryOption));
+			var parser = new VerbParser(verbModel);
 
 			//************* WHEN
 			var value = parser.Parse(@"-copy2 --src='C:\Temp\My Folder\TTT'");
@@ -66,7 +66,7 @@ namespace CLIArgumentsParser.Tests.Verbs
 		{
 			//******** GIVEN
 			var test = new VerbDefinitionAttribute("copy", "Copy all files from source to output fodler");
-			var parser = new VerbParser(Verb.FromAttribute(test), typeof(CopyArguments));
+			var parser = new VerbParser(Verb.FromAttribute(test).OnTargetProperty(typeof(CopyArguments)));
 
 			//******** WHEN
 			var parsed = parser.Parse("-copy");

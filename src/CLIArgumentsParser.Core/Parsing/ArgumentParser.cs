@@ -4,20 +4,19 @@ using System.Linq;
 
 namespace CLIArgumentsParser.Core.Parsing
 {
-	internal abstract class ModelParser<Tmodel>
+	internal abstract class ModelParser<Tmodel> where Tmodel : ICLIArgumentModel
 	{
 		readonly protected TokenGenerator _Tokenizer;
-		readonly protected Type _TargetType;
-
 		protected Tmodel _Model;
 
-		protected ModelParser(Tmodel model, TokenGenerator tokenizer, Type targetType)
+		protected ModelParser(Tmodel model, TokenGenerator tokenizer)
 		{
-			if(model == null)
+			if (model == null)
+				throw new ArgumentNullException(nameof(model));
+			if (model.TargetType == null)
 				throw new ArgumentNullException(nameof(model));
 			this._Model = model;
 			this._Tokenizer = tokenizer ?? throw new ArgumentNullException(nameof(tokenizer));
-			this._TargetType = targetType ?? throw new ArgumentNullException(nameof(targetType));
 		}
 
 		/// <summary>
@@ -28,11 +27,11 @@ namespace CLIArgumentsParser.Core.Parsing
 		/// <exception cref="System.ArgumentException">Thrown if one of the params is null, empty or whitespace.</exception>
 		public object Parse(string arg)
 		{
-			if (string.IsNullOrWhiteSpace(arg)) throw new ArgumentException(nameof(arg));
+			if (string.IsNullOrWhiteSpace(arg))
+				throw new ArgumentException(nameof(arg));
 
 			// get tokens 
 			var tokens = this._Tokenizer.TokenizeThisString(arg).ToList();
-
 			return Parse(tokens);
 		}
 		/// <summary>
@@ -56,8 +55,8 @@ namespace CLIArgumentsParser.Core.Parsing
 			var returnValue = ParseFromTokens(tokens);
 
 			//check consistencey
-			if (returnValue != null && returnValue.GetType() != this._TargetType)
-				throw new InvalidOperationException($"Unable to convert {returnValue.GetType().FullName} into { this._TargetType.FullName} for argument {String.Join(" ", tokens.Select(x => x.AsNaturalString()))}");
+			if (returnValue != null && returnValue.GetType() != this._Model.TargetType)
+				throw new InvalidOperationException($"Unable to convert {returnValue.GetType().FullName} into { this._Model.TargetType.FullName} for argument {String.Join(" ", tokens.Select(x => x.AsNaturalString()))}");
 			return returnValue;
 		}
 		/// <summary>

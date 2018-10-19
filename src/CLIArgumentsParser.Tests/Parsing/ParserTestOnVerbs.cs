@@ -23,7 +23,7 @@ namespace CLIArgumentsParser.Tests.Parsing
 		public void ParsingVerbWithoutArguments_ReturnsThatClass()
 		{
 			//******** GIVEN
-			string[] arguments = new string[] { "-copy" };
+			string[] arguments = new string[] { "/copy" };
 			Exception thrownEx = null;
 
 			//******** WHEN

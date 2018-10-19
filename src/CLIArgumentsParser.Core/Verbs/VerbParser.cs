@@ -11,13 +11,8 @@ namespace CLIArgumentsParser.Core.Verbs
 		/// <summary>
 		/// default constructor
 		/// </summary>
-		internal VerbParser(Verb model, Type targetType) : base(model, new TokenGenerator(new List<string>() { "--" }), targetType)
+		internal VerbParser(Verb model) : base(model, new TokenGenerator(new List<string>() { Option.OPTION_IDENTIFIER }))
 		{
-			//var optionDefinitions = OptionDefinitionAttributeHelper.ExtractPropertiesMarkedWithOptionAttribute(this._TargetType);
-			//foreach (var opt in optionDefinitions)
-			//{
-			//	this._Model.AddOptionFromAttribute(opt.Value, opt.Key.PropertyType);
-			//}
 		}
 
 		/// <summary>
@@ -45,7 +40,7 @@ namespace CLIArgumentsParser.Core.Verbs
 				throw new InvalidCLIArgumentException($"NO Token Found for Verb", "Verb");
 
 			// instance the value
-			var returnValue = Activator.CreateInstance(this._TargetType);
+			var returnValue = Activator.CreateInstance(this._Model.TargetType);
 
 			// crete the verb option
 			if (targetTokens.Count() > 0)
@@ -53,7 +48,7 @@ namespace CLIArgumentsParser.Core.Verbs
 				// I need to parse the options
 				var tokens = targetTokens.Skip(1).ToList();
 				// get properties to map
-				var optionDefinitions = OptionDefinitionAttributeHelper.ExtractPropertiesMarkedWithOptionAttribute(this._TargetType);
+				var optionDefinitions = OptionDefinitionAttributeHelper.ExtractPropertiesMarkedWithOptionAttribute(this._Model.TargetType);
 				foreach (var token in tokens)
 				{
 					// find correspongin attribute
@@ -62,7 +57,7 @@ namespace CLIArgumentsParser.Core.Verbs
 						throw new InvalidCLIArgumentException($"Unable to find option {token.Name} for verb {targetTokens.First().Name}", targetTokens.First().Name);
 					var targetProperty = optionDefinitions.Single(x => x.Value.Code == token.Name || x.Value.LongCode == token.Name).Key;
 					// parse the value
-					var optionParser = new OptionParser(Option.FromAttribute(attribute).OnTargetProperty(targetProperty.PropertyType), targetProperty.PropertyType);
+					var optionParser = new OptionParser(Option.FromAttribute(attribute).OnTargetProperty(targetProperty.PropertyType));
 					var outputValue = optionParser.Parse(token.AsNaturalString());
 					// update the value
 					targetProperty.SetValue(returnValue, outputValue);

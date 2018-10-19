@@ -32,6 +32,10 @@ namespace CLIArgumentsParser.Core
 		/// Registry to store mapping between name of verb and Property of given <see cref="ArgumentsType"/>
 		/// </summary>
 		public Dictionary<string, PropertyInfo> VerbPropertyRegistry { get; private set; }
+		/// <summary>
+		/// Gets the list of examples for the usages
+		/// </summary>
+		public IEnumerable<CLIUsageExample> Examples { get; private set; }
 
 		/// <summary>
 		/// Defualt Model
@@ -55,7 +59,10 @@ namespace CLIArgumentsParser.Core
 
 			this.OptionPropertyRegistry = new Dictionary<string, PropertyInfo>();
 			this.VerbPropertyRegistry = new Dictionary<string, PropertyInfo>();
+			this.Examples = new List<CLIUsageExample>();
 		}
+
+		#region Internal methods
 
 		internal void MapOption(string longCode, PropertyInfo targetProperty)
 		{
@@ -76,5 +83,22 @@ namespace CLIArgumentsParser.Core
 				throw new InvalidOperationException($"Unable to map Verb: item {name} already mapped");
 			this.VerbPropertyRegistry.Add(name, targetProperty);
 		}
+		/// <summary>
+		/// Adds the example
+		/// </summary>
+		/// <param name="example"></param>
+		/// <returns></returns>
+		internal void AddExample(CLIUsageExample example)
+		{
+			if (example == null)
+				throw new ArgumentNullException(nameof(example));
+
+			var examples = this.Examples.ToList();
+			examples.Add(example);
+			this.Examples = examples;
+		}
+
+		#endregion
+
 	}
 }

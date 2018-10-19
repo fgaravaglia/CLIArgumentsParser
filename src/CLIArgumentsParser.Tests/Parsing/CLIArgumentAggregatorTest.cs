@@ -39,7 +39,7 @@ namespace CLIArgumentsParser.Tests.Parsing
 		public void ParseConsoleArguments_WorksFine()
 		{
 			//******** GIVEN
-			string[] arguments = new string[] { "-copy", @"--src='C:\Temp\Pluto'", "--singleOutput", "--v=WARN" };
+			string[] arguments = new string[] { "/copy", @"--src='C:\Temp\Pluto'", "--singleOutput", "--v=WARN" };
 			var analyizer = new ArgumentModelAnalyzer<TestArguments>();
 			analyizer.Analyze();
 			var model = analyizer.BuildModel();
@@ -51,7 +51,7 @@ namespace CLIArgumentsParser.Tests.Parsing
 			//******** ASSERT
 			Assert.IsNotNull(parsed);
 			Assert.AreEqual(arguments.Length - 1, parsed.Length);
-			Assert.AreEqual(@"-copy --src='C:\Temp\Pluto'", parsed[0]);
+			Assert.AreEqual(@"/copy --src='C:\Temp\Pluto'", parsed[0]);
 			Assert.AreEqual(arguments[3], parsed[1]);
 			Assert.AreEqual(arguments[2], parsed[2]);
 		}

@@ -39,8 +39,11 @@ namespace CLIArgumentsParser.Core
 		/// Target type to parse as arguments
 		/// </summary>
 		public Type TargetArgumentsType { get { return _Model != null ? _Model.ArgumentsType : null; } }
+		/// <summary>
+		/// The model of  usage
+		/// </summary>
+		public CLIUsageModel UsageModel { get { return _Model; } }
 
-		
 		/// <summary>
 		/// Default Constructor
 		/// </summary>
@@ -113,7 +116,7 @@ namespace CLIArgumentsParser.Core
 
 				// if needed, I aggregate options for verbs with the verb itself
 				if (!_UseAggregatedArgumentsAsInputForVerbs)
-				{ 
+				{
 					var aggregator = new CLIArgumentAggregator(this._Model);
 					this._Arguments = aggregator.AdaptFromCLI(_Arguments);
 				}
@@ -183,7 +186,7 @@ namespace CLIArgumentsParser.Core
 					var optionDefinition = this._Model.Options.Single(x => x.Code == argumentKey || x.LongCode == argumentKey);
 					var p = this._Model.OptionPropertyRegistry[optionDefinition.LongCode];
 					// parse the option
-					var parser = new OptionParser(optionDefinition, p.PropertyType);
+					var parser = new OptionParser(optionDefinition);
 					var optionValue = parser.Parse(tokens);
 					// set the proper value
 					p.SetValue(parsedArguments, optionValue);
@@ -204,7 +207,7 @@ namespace CLIArgumentsParser.Core
 					var verbDefinition = this._Model.Verbs.Single(x => x.Name == argumentKey);
 					var p = this._Model.VerbPropertyRegistry[verbDefinition.Name];
 					// parse the verb 
-					var parser = new VerbParser(verbDefinition, p.PropertyType);
+					var parser = new VerbParser(verbDefinition);
 					var optionValue = parser.Parse(tokens);
 					// set the proper value
 					p.SetValue(parsedArguments, optionValue);
