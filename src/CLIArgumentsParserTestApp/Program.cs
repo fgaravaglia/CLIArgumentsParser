@@ -14,8 +14,8 @@ namespace CLIArgumentsParserTestApp
 				var parser = ParserHelper.DefaultParser();
 				var options = parser.Parse<TestArguments>(args);
 
-				var helper = new ConsoleUsagePrinter(parser.UsageModel);
-				helper.Print();
+				UsagePrinterHelper.PrintOnConsoleFor<TestArguments>();
+
 				Environment.Exit(0);
 			}
 			catch (Exception ex)

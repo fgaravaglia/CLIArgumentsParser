@@ -63,6 +63,7 @@
     <Compile Include="Usages\ConsoleUsagePrinter.cs" />
     <Compile Include="Usages\StringBuilderUsagePrinter.cs" />
     <Compile Include="Usages\UsagePrinter.cs" />
+    <Compile Include="Usages\UsagePrinterHelper.cs" />
     <Compile Include="Verbs\Verb.cs" />
     <Compile Include="Verbs\VerbDefinitionAttribute.cs" />
     <Compile Include="Options\Option.cs" />
