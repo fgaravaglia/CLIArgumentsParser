@@ -1,6 +1,5 @@
 ﻿using System;
 using CLIArgumentsParser.Core;
-using CLIArgumentsParser.Core.Usages;
 using static CLIArgumentsParser.Tests.Parsing.ParserTestOnMixedArgs;
 
 namespace CLIArgumentsParserTestApp
@@ -11,10 +10,15 @@ namespace CLIArgumentsParserTestApp
 		{
 			try
 			{
-				var parser = ParserHelper.DefaultParser();
+				// configure parser
+				var info = new CLIInfo();
+				var parser = ParserHelper.DefaultParser()
+								.UsingThisVersionInOutput(info, Console.WriteLine)
+								.PrintingHelperOnErrorAndQuit<TestArguments>(info, Console.WriteLine);
+				// try to parse arguments; if thorws errors, the program quits
 				var options = parser.Parse<TestArguments>(args);
 
-				UsagePrinterHelper.PrintOnConsoleFor<TestArguments>();
+				//UsagePrinterHelper.PrintOnConsoleFor<TestArguments>(info.Alias);
 
 				Environment.Exit(0);
 			}

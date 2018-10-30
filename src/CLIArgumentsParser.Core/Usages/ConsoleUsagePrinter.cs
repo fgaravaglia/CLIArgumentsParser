@@ -14,7 +14,7 @@ namespace CLIArgumentsParser.Core.Usages
 		/// <summary>
 		/// Default Constructor
 		/// </summary>
-		public ConsoleUsagePrinter(CLIUsageModel model) : base(model)
+		public ConsoleUsagePrinter(CLIUsageModel model, string alias) : base(model, alias)
 		{ 
 		
 		}

@@ -13,7 +13,8 @@ namespace CLIArgumentsParser.Core.Usages
 		/// Default Constructor
 		/// </summary>
 		/// <param name="model"></param>
-		public StringBuilderUsagePrinter(CLIUsageModel model) : base(model)
+		/// <param name="alias">Alias for the CLI</param>
+		public StringBuilderUsagePrinter(CLIUsageModel model, string alias) : base(model, alias)
 		{
 			this._MessageBuilder = new StringBuilder();
 		}

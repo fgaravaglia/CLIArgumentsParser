@@ -33,7 +33,20 @@ namespace CLIArgumentsParser.Core
 		/// True if parser accept alraedy aggregated arguments
 		/// </summary>
 		bool _UseAggregatedArgumentsAsInputForVerbs;
+		/// <summary>
+		///  model to manage
+		/// </summary>
 		CLIUsageModel _Model;
+		/// <summary>
+		/// Callback to execute in case of error
+		/// </summary>
+		Action<Exception> _OnErrorCallback;
+		/// <summary>
+		/// Callback to execute in case of success
+		/// </summary>
+		Action<CLIArguments> _OnSuccessCallback;
+
+		#region Properties
 
 		/// <summary>
 		/// Target type to parse as arguments
@@ -43,6 +56,8 @@ namespace CLIArgumentsParser.Core
 		/// The model of  usage
 		/// </summary>
 		public CLIUsageModel UsageModel { get { return _Model; } }
+
+		#endregion
 
 		/// <summary>
 		/// Default Constructor
@@ -55,14 +70,9 @@ namespace CLIArgumentsParser.Core
 			AdaptingCommandArguments(x => { return x; });
 			UseFactoryForArguments(() => (CLIArguments)Activator.CreateInstance(this.TargetArgumentsType));
 		}
-		/// <summary>
-		/// Getts the last occurred error
-		/// </summary>
-		/// <returns>The exception occurred; null if everything is fine</returns>
-		public Exception GetLastError()
-		{
-			return this._OccurredError;
-		}
+
+		#region Public Methods - Fluently Syntax
+
 		/// <summary>
 		/// Sets a custom adapter to transform the arguments before the parsing operation
 		/// </summary>
@@ -90,6 +100,37 @@ namespace CLIArgumentsParser.Core
 		{
 			this._ArgumentsActivator = activator ?? throw new ArgumentNullException(nameof(activator));
 			return this;
+		}
+		/// <summary>
+		/// Sets the callback for error management
+		/// </summary>
+		/// <param name="errorCallback"></param>
+		/// <returns></returns>
+		public Parser OnError(Action<Exception> errorCallback)
+		{
+			this._OnErrorCallback = errorCallback ?? throw new ArgumentNullException(nameof(errorCallback));
+			return this;
+		}
+		/// <summary>
+		/// Sets the callback for success parsing
+		/// </summary>
+		/// <param name="successCallback"></param>
+		/// <returns></returns>
+		public Parser OnSuccess(Action<CLIArguments> successCallback)
+		{
+			this._OnSuccessCallback = successCallback ?? throw new ArgumentNullException(nameof(successCallback));
+			return this;
+		}
+
+		#endregion
+
+		/// <summary>
+		/// Getts the last occurred error
+		/// </summary>
+		/// <returns>The exception occurred; null if everything is fine</returns>
+		public Exception GetLastError()
+		{
+			return this._OccurredError;
 		}
 		/// <summary>
 		/// Parses the cli arguments and stores internally the proper models
@@ -134,11 +175,18 @@ namespace CLIArgumentsParser.Core
 					if (currentValue == null)
 						throw new InvalidCLIArgumentException($"Invalid Argument: {opt.Value.LongCode} is missing", opt.Value.LongCode);
 				}
+
+				// success
+				if (this._OnSuccessCallback != null)
+					this._OnSuccessCallback(parsedArguments);
 			}
 			catch (Exception ex)
 			{
 				//store the error
 				this._OccurredError = ex;
+				// callback
+				if (this._OnErrorCallback != null)
+					this._OnErrorCallback(ex);
 			}
 
 			return parsedArguments;

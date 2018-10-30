@@ -23,7 +23,7 @@ namespace CLIArgumentsParser.Tests.Usages
 			var analyzer = new ArgumentModelAnalyzer<OptionsPlusVerbArguments>();
 			analyzer.Analyze();
 			var model = analyzer.BuildModel();
-			this._Printer = new StringBuilderUsagePrinter(model);
+			this._Printer = new StringBuilderUsagePrinter(model, "my.exe");
 
 			//******** WHEN
 			this._Printer.Print();
@@ -42,7 +42,7 @@ namespace CLIArgumentsParser.Tests.Usages
 			var analyzer = new ArgumentModelAnalyzer<OnlyOptionsArguments>();
 			analyzer.Analyze();
 			var model = analyzer.BuildModel();
-			this._Printer = new StringBuilderUsagePrinter(model);
+			this._Printer = new StringBuilderUsagePrinter(model, "my.exe");
 
 			//******** WHEN
 			this._Printer.Print();

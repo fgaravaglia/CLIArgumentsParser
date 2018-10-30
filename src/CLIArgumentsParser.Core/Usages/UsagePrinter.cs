@@ -14,13 +14,18 @@ namespace CLIArgumentsParser.Core.Usages
 		/// Cli usage
 		/// </summary>
 		readonly protected CLIUsageModel _Model;
+		/// <summary>
+		/// Alias to call cli
+		/// </summary>
+		readonly protected string _Alias;
 
 		/// <summary>
 		/// Default Constructor
 		/// </summary>
-		protected UsagePrinter(CLIUsageModel model)
+		protected UsagePrinter(CLIUsageModel model, string alias)
 		{
 			_Model = model ?? throw new ArgumentNullException(nameof(CLIUsageModel));
+			_Alias = alias ?? throw new ArgumentNullException(nameof(alias));
 		}
 
 		/// <summary>
@@ -28,7 +33,9 @@ namespace CLIArgumentsParser.Core.Usages
 		/// </summary>
 		public void Print()
 		{
-			PrintLine("Usage:");
+			PrintSeparatorLine();
+			PrintLine($"Helper for {_Alias}");
+			PrintLine($"Usage:");
 			PrintSeparatorLine();
 			foreach (var verb in this._Model.Verbs)
 			{

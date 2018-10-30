@@ -11,7 +11,7 @@ namespace CLIArgumentsParser.Core.Usages
 		/// Prints the usage for given type <typeparamref name="T"/>
 		/// </summary>
 		/// <typeparam name="T">class that mape arguments for CLI</typeparam>
-		public static void PrintOnConsoleFor<T>() where T : CLIArguments
+		public static void PrintOnConsoleFor<T>(string alias) where T : ICLIArguments
 		{
 			// analyze the target type and build the model for usage
 			var analyzer = new ArgumentModelAnalyzer<T>();
@@ -19,7 +19,7 @@ namespace CLIArgumentsParser.Core.Usages
 			var model = analyzer.BuildModel();
 
 			// print usage
-			var helper = new ConsoleUsagePrinter(model);
+			var helper = new ConsoleUsagePrinter(model, alias);
 			helper.Print();
 		}
 	}

@@ -49,6 +49,8 @@
     <Compile Include="CLIUsageModel.cs" />
     <Compile Include="CLUUsageExample.cs" />
     <Compile Include="ICLIArgument.cs" />
+    <Compile Include="ICLIInfo.cs" />
+    <Compile Include="ICLIVersion.cs" />
     <Compile Include="Options\LOVOptionDefinitionAttribute.cs" />
     <Compile Include="Options\OptionDefinitionAttribute.cs" />
     <Compile Include="Options\OptionDefinitionAttributeHelper.cs" />
