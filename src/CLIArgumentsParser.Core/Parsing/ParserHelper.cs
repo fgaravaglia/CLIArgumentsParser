@@ -99,7 +99,7 @@ namespace CLIArgumentsParser.Core
 		/// <returns></returns>
 		public static Parser UsingThisVersionInOutput(this Parser p, ICLIInfo cliInfo)
 		{
-			UsingThisVersionInOutput(p, cliInfo);
+			return p.UsingThisVersionInOutput(cliInfo, Console.WriteLine);
 		}
 	}
 }
