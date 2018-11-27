@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using CLIArgumentsParser.Core.Options;
 using CLIArgumentsParser.Core.Parsing;
 
@@ -49,6 +50,7 @@ namespace CLIArgumentsParser.Core.Verbs
 				var tokens = targetTokens.Skip(1).ToList();
 				// get properties to map
 				var optionDefinitions = OptionDefinitionAttributeHelper.ExtractPropertiesMarkedWithOptionAttribute(this._Model.TargetType);
+				Dictionary<PropertyInfo, OptionDefinitionAttribute> alreadyConsidered = new Dictionary<PropertyInfo, OptionDefinitionAttribute>();
 				foreach (var token in tokens)
 				{
 					// find correspongin attribute
@@ -61,6 +63,23 @@ namespace CLIArgumentsParser.Core.Verbs
 					var outputValue = optionParser.Parse(token.AsNaturalString());
 					// update the value
 					targetProperty.SetValue(returnValue, outputValue);
+					// already managed
+					alreadyConsidered.Add(targetProperty, attribute);
+				}
+
+				// considered not managed
+				foreach (var opt in optionDefinitions)
+				{
+					var definition = alreadyConsidered.Values.SingleOrDefault(x => x.Code == opt.Value.Code);
+					if (definition != null)
+						continue;
+					if (opt.Value.Mandatory)
+						throw new InvalidCLIArgumentException($"Mandatory option {opt.Value.Code} not found in {this._Model.TargetType.Name}", "opt.Value.Code");
+					if (opt.Value.DefaultValue != null)
+					{
+						var targetProperty = opt.Key;
+						targetProperty.SetValue(returnValue, opt.Value.DefaultValue);
+					}
 				}
 			}
 			return returnValue;

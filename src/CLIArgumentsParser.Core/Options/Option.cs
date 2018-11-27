@@ -34,7 +34,7 @@ namespace CLIArgumentsParser.Core.Options
 		/// <summary>
 		/// Gets the type of argument (Verb, Option)
 		/// </summary>
-		public string ArgumentType { get { return  "OPTION"; } }
+		public string ArgumentType { get { return "OPTION"; } }
 		/// <summary>
 		/// Gets the list of examples for the usages
 		/// </summary>
@@ -57,7 +57,10 @@ namespace CLIArgumentsParser.Core.Options
 		/// </summary>
 		/// <example>o, src, i</example>
 		public List<string> AvailableValues { get; private set; }
-
+		/// <summary>
+		/// In case of Complex Option (like an oject), sets the inner options
+		/// </summary>
+		public List<Option> Options { get; private set; }
 		/// <summary>
 		/// Default Constructor
 		/// </summary>
@@ -78,6 +81,7 @@ namespace CLIArgumentsParser.Core.Options
 			this.DefaultValue = null;
 			this.AvailableValues = new List<string>();
 			this.Examples = new List<CLIUsageExample>();
+			this.Options = new List<Option>();
 		}
 
 		/// <summary>

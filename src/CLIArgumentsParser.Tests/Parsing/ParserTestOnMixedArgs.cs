@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using CLIArgumentsParser.Core;
 using CLIArgumentsParser.Core.Options;
 using CLIArgumentsParser.Core.Verbs;
@@ -27,7 +23,7 @@ namespace CLIArgumentsParser.Tests.Parsing
 		public void ParseVerbWithOptionsAnd2Options_WorksFine()
 		{
 			//******** GIVEN
-			string[] arguments = new string[] { @"/copy --src='C:\Temp\Pluto'", "--singleOutput" , "--v=WARN"};
+			string[] arguments = new string[] { @"/copy --src='C:\Temp\Pluto'", "--singleOutput", "--v=WARN" };
 			Exception thrownEx = null;
 
 			//******** WHEN
@@ -42,6 +38,26 @@ namespace CLIArgumentsParser.Tests.Parsing
 			Assert.AreEqual("WARN", parsed.Verbosity, "Wrong value for Verbosity");
 			Assert.IsNotNull(parsed.CopyWithArguments);
 			Assert.AreEqual(@"'C:\Temp\Pluto'", parsed.CopyWithArguments.SrcFolder, "Wrong value for CopyWithArguments.SrcFolder");
+		}
+
+		[TestMethod]
+		[TestCategory(BaseUnitTest.UNIT)]
+		public void ParseVerbWithNotMandatoryAndWithDefaultOption_WorksFine()
+		{
+			//******** GIVEN
+			string[] arguments = new string[] { @"/storage --d='C:\Temp\Pluto'" };
+			Exception thrownEx = null;
+
+			//******** WHEN
+			TestArguments2 parsed = this._Parser.UseAggregatedArguments().Parse<TestArguments2>(arguments);
+
+			//******** ASSERT
+			thrownEx = this._Parser.GetLastError();
+			string message = thrownEx == null ? "" : thrownEx.Message;
+			Assert.IsNull(thrownEx, message);
+			Assert.IsNotNull(parsed.Repository, "Wrong value for Repository");
+			Assert.IsFalse(String.IsNullOrEmpty(parsed.Repository.FileName), "Wrong value for FileName: cannot be null");
+			Assert.AreEqual("MyData.dat", parsed.Repository.FileName,  "Wrong value for FileName");
 		}
 
 		[TestMethod]
@@ -70,7 +86,7 @@ namespace CLIArgumentsParser.Tests.Parsing
 
 		public class TestArguments : CLIArguments
 		{
-			[LOVOptionDefinition("v", "verbosity", "Sets the verbosity of logging", true, new string[] { "DEBUG", "INFO", "WARN", "ERR"})]
+			[LOVOptionDefinition("v", "verbosity", "Sets the verbosity of logging", true, new string[] { "DEBUG", "INFO", "WARN", "ERR" })]
 			public string Verbosity { get; set; }
 
 			[OptionDefinition("s", "singleOutput", "Writes the output in a single file or not")]
@@ -86,6 +102,20 @@ namespace CLIArgumentsParser.Tests.Parsing
 			public string SrcFolder { get; set; }
 		}
 
+		[VerbDefinition("storage", "define the storage for test data")]
+		public class RepositorySettings : CLIArguments
+		{
+			[OptionDefinition("d", "directory", "Directory where repository file is searched for", true)]
+			public string FolderPath { get; set; }
+
+			[OptionDefinition("f", "jobsfile", "File where data is stored", mandatory: false, defaultValue: "MyData.dat")]
+			public string FileName { get; set; }
+		}
+
+		public class TestArguments2  :CLIArguments
+		{ 
+			public RepositorySettings Repository { get; set; }
+		}
 		#endregion
 	}
 }
