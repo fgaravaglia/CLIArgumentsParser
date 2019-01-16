@@ -45,7 +45,6 @@ namespace CLIArgumentsParser.Core.Options
 				return outputValue;
 			}
 
-			// if there is a default and no argument
 			if (String.IsNullOrWhiteSpace(targetTokens.ToList()[0].Value) && this._Model.DefaultValue != null)
 				return this._Model.DefaultValue;
 

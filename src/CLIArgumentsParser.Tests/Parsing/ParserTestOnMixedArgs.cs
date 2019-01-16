@@ -62,6 +62,45 @@ namespace CLIArgumentsParser.Tests.Parsing
 
 		[TestMethod]
 		[TestCategory(BaseUnitTest.UNIT)]
+		public void ParseVerbWithNotMandatoryAndWithBooleanDefaultOption_WorksFine()
+		{
+			//******** GIVEN
+			string[] arguments = new string[] { @"/storage --d='C:\Temp\Pluto'" };
+			Exception thrownEx = null;
+
+			//******** WHEN
+			TestArguments2 parsed = this._Parser.UseAggregatedArguments().Parse<TestArguments2>(arguments);
+
+			//******** ASSERT
+			thrownEx = this._Parser.GetLastError();
+			string message = thrownEx == null ? "" : thrownEx.Message;
+			Assert.IsNull(thrownEx, message);
+			Assert.IsNotNull(parsed.Repository, "Wrong value for Repository");
+			Assert.IsFalse(parsed.Repository.Recreate, "Wrong value for Recreate");
+		}
+
+
+		[TestMethod]
+		[TestCategory(BaseUnitTest.UNIT)]
+		public void ParseVerbWithNotMandatoryAndWithBooleanDefaultOption_WorksFineIfSpecified()
+		{
+			//******** GIVEN
+			string[] arguments = new string[] { @"/storage --d='C:\Temp\Pluto' --r" };
+			Exception thrownEx = null;
+
+			//******** WHEN
+			TestArguments2 parsed = this._Parser.UseAggregatedArguments().Parse<TestArguments2>(arguments);
+
+			//******** ASSERT
+			thrownEx = this._Parser.GetLastError();
+			string message = thrownEx == null ? "" : thrownEx.Message;
+			Assert.IsNull(thrownEx, message);
+			Assert.IsNotNull(parsed.Repository, "Wrong value for Repository");
+			Assert.IsTrue(parsed.Repository.Recreate, "Wrong value for Recreate");
+		}
+
+		[TestMethod]
+		[TestCategory(BaseUnitTest.UNIT)]
 		public void ParseConsoleArguments_WorksFine()
 		{
 			//******** GIVEN
@@ -110,6 +149,9 @@ namespace CLIArgumentsParser.Tests.Parsing
 
 			[OptionDefinition("f", "jobsfile", "File where data is stored", mandatory: false, defaultValue: "MyData.dat")]
 			public string FileName { get; set; }
+
+			[OptionDefinition("r", "Recreate", "Recreate File where data is stored")]
+			public bool Recreate { get; set; }
 		}
 
 		public class TestArguments2  :CLIArguments
