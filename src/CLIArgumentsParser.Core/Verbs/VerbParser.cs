@@ -23,8 +23,13 @@ namespace CLIArgumentsParser.Core.Verbs
         {
             errorMessage = String.Empty;
 
-            string keyWithoutIdentifier = key.StartsWith("--") ? key.Substring(2, key.Length - 2).Trim()
-                                            : key.StartsWith("-") ? key.Substring(1, key.Length - 1).Trim() : key;
+            // define the key identifier
+            string keyWithoutIdentifier = key;
+            if (key.StartsWith("--"))
+                keyWithoutIdentifier = key.Substring(2, key.Length - 2).Trim();
+            else if (key.StartsWith("-"))
+                keyWithoutIdentifier = key.Substring(1, key.Length - 1).Trim();
+
             if (this._Model.Name == keyWithoutIdentifier || this._Model.Options.Exists(x => x.Code == keyWithoutIdentifier || x.LongCode == keyWithoutIdentifier))
                 return true;
 
