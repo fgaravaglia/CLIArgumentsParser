@@ -2,6 +2,7 @@
 Library to easily manage and parse CLI arguments
 
 [![Build Status](https://garaproject.visualstudio.com/CLIArgumentParser/_apis/build/status/fgaravaglia.CLIArgumentsParser?branchName=master)](https://garaproject.visualstudio.com/CLIArgumentParser/_build/latest?definitionId=9&branchName=master)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=CLIArgumentParserLibrary&metric=alert_status)](https://sonarcloud.io/dashboard?id=CLIArgumentParserLibrary)
 
 Current Version: <b>Stable - 1.1</b> [![Build Status](https://garaproject.visualstudio.com/CLIArgumentParser/_apis/build/status/CLIArgumentsParser-CI-Release1.1?branchName=Release1.1)](https://garaproject.visualstudio.com/CLIArgumentParser/_build/latest?definitionId=20&branchName=Release1.1)
 
