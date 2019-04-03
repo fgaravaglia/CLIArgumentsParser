@@ -18,7 +18,7 @@ namespace CLIArgumentsParserTestApp
                                 .PrintingHelperOnErrorAndQuit<TestArguments>(info, Console.WriteLine);
                 // try to parse arguments; if thorws errors, the program quits
                 var options = parser.Parse<TestArguments>(args);
-                Console.WriteLine("Options succesfully parsed");
+                Console.WriteLine(options != null ? "Options succesfully parsed" : "Options is currently null");
                 UsagePrinterHelper.PrintOnConsoleFor<TestArguments>(info.Alias);
 
                 Environment.Exit(0);
