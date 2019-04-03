@@ -24,7 +24,7 @@ namespace CLIArgumentsParser.Core.Parsing
 		{
 			if (tokenIdentifiers == null)
 				throw new ArgumentNullException(nameof(tokenIdentifiers));
-			if (tokenIdentifiers.Count() == 0)
+			if (!tokenIdentifiers.Any())
 				throw new ArgumentNullException(nameof(tokenIdentifiers));
 
 			this._TokenIdentifiers = new List<string>();

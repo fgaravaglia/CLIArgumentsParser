@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using CLIArgumentsParser.Core.Options;
 using CLIArgumentsParser.Core.Verbs;
 
@@ -45,8 +46,8 @@ namespace CLIArgumentsParser.Core.Parsing
 			{
 				if (verbArgs.Contains(Verb.VERB_IDENTIFIER + verb.Name))
 				{
-					string currentArgument = Verb.VERB_IDENTIFIER + verb.Name;
-					alreadyTakenArgs.Add(currentArgument);
+					StringBuilder currentArgument = new StringBuilder(Verb.VERB_IDENTIFIER + verb.Name);
+					alreadyTakenArgs.Add(Verb.VERB_IDENTIFIER + verb.Name);
 
 					//Chekc for options on the verb
 					foreach (var opt in verb.Options)
@@ -59,11 +60,11 @@ namespace CLIArgumentsParser.Core.Parsing
 							alreadyTakenArgs.Add(currentOptionArgument);
 
 							// concatenate on the same string
-							currentArgument += (" " + currentOptionArgument);
+							currentArgument.Append(" " + currentOptionArgument);
 						}
 					}
 
-					adaptedArgs.Add(currentArgument);
+					adaptedArgs.Add(currentArgument.ToString());
 				}
 			}
 			// check for options
