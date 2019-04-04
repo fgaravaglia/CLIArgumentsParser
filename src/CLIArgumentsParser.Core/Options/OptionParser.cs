@@ -14,7 +14,7 @@ namespace CLIArgumentsParser.Core.Options
 		/// <summary>
 		/// True if key is valid compared to attribute definition
 		/// </summary>
-		protected override bool IsKeyValid(string key, out string errorMessage)
+		internal override bool IsKeyValid(string key, out string errorMessage)
 		{
 			errorMessage = string.Empty;
 

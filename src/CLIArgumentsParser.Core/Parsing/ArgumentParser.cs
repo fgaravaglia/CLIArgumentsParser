@@ -62,7 +62,7 @@ namespace CLIArgumentsParser.Core.Parsing
 		/// <summary>
 		/// True if key is valid compared to attribute definition
 		/// </summary>
-		protected abstract bool IsKeyValid(string key, out string errorMessage);
+		internal abstract bool IsKeyValid(string key, out string errorMessage);
 		/// <summary>
 		/// Executes the parse for the given key/arguments
 		/// </summary>

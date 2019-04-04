@@ -19,13 +19,13 @@ namespace CLIArgumentsParser.Core.Verbs
         /// <summary>
         /// True if key is valid compared to attribute definition
         /// </summary>
-        protected override bool IsKeyValid(string key, out string errorMessage)
+        internal override bool IsKeyValid(string key, out string errorMessage)
         {
             errorMessage = String.Empty;
 
             // define the key identifier
             string keyWithoutIdentifier = key;
-            if (key.StartsWith("--"))
+            if (key.StartsWith(Option.OPTION_IDENTIFIER))
                 keyWithoutIdentifier = key.Substring(2, key.Length - 2).Trim();
             else if (key.StartsWith("-"))
                 keyWithoutIdentifier = key.Substring(1, key.Length - 1).Trim();
