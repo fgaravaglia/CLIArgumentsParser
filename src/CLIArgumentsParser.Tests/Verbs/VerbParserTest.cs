@@ -2,6 +2,7 @@
 using CLIArgumentsParser.Core.Parsing;
 using CLIArgumentsParser.Core.Verbs;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Linq;
 using static CLIArgumentsParser.Tests.Parsing.ParserTestOnVerbs;
 
@@ -106,6 +107,19 @@ namespace CLIArgumentsParser.Tests.Verbs
 
             //******** ASSERT
             Assert.IsTrue(parsed);
+        }
+
+        [TestMethod]
+        [TestCategory(BaseUnitTest.UNIT)]
+        [ExpectedException(typeof(ArgumentException))]
+        public void ParsingNullString_ThrowsError()
+        {
+            //******** GIVEN
+            var test = new VerbDefinitionAttribute("copy", "Copy all files from source to output fodler");
+            var parser = new VerbParser(Verb.FromAttribute(test).OnTargetProperty(typeof(CopyArguments)));
+
+            //******** WHEN
+            var parsed = parser.Parse("");
         }
     }
 }

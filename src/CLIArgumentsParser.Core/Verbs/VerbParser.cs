@@ -42,9 +42,6 @@ namespace CLIArgumentsParser.Core.Verbs
         /// <returns></returns>
         protected override object ParseFromTokens(IEnumerable<Token> targetTokens)
         {
-            if (!targetTokens.Any())
-                throw new InvalidCLIArgumentException($"No Token Found for Verb", "Verb");
-
             // instance the value
             var returnValue = Activator.CreateInstance(this._Model.TargetType);
 
