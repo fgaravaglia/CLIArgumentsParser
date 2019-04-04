@@ -1,4 +1,5 @@
 ﻿using CLIArgumentsParser.Core.Options;
+using CLIArgumentsParser.Core.Verbs;
 using System;
 using System.Linq;
 using System.Text;
@@ -37,47 +38,15 @@ namespace CLIArgumentsParser.Core.Usages
             PrintLine($"Helper for {_Alias}");
             PrintLine($"Usage:");
             PrintSeparatorLine();
+
             foreach (var verb in this._Model.Verbs)
             {
-                PrintLine($"\t{verb.Code}\t{verb.HelpText}");
-                PrintLine("\tOptions:");
-                foreach (var opt in verb.Options)
-                {
-                    PrintLine($"\t\t{Option.OPTION_IDENTIFIER}{opt.Code} ({Option.OPTION_IDENTIFIER}{opt.LongCode}) {opt.HelpText}");
-                    StringBuilder options = new StringBuilder();
-                    options.Append($"Mandatory: {opt.Mandatory}");
-                    if (opt.DefaultValue != null)
-                        options.Append($", Default: {opt.DefaultValue.ToString()}");
-                    if (opt.AvailableValues != null && opt.AvailableValues.Count > 0)
-                        options.Append($", Admitted Values: {String.Join(";", opt.AvailableValues)}");
-                    PrintLine($"\t\t{options.ToString()}");
-                }
-
-                // check usages
-                if (verb.Examples.Any())
-                {
-                    PrintLine($"\tExample:");
-                    verb.Examples.ToList().ForEach(x =>
-                    {
-                        PrintLine($"\t#{verb.Examples.ToList().IndexOf(x)}  {x.HelpText}: {x.Sample.ToCLIString()}");
-                    });
-                    PrintLine(" ");
-                }
+                PrintVerb(verb);
             }
 
             foreach (var opt in this._Model.Options)
             {
-                PrintLine($"\t{Option.OPTION_IDENTIFIER}{opt.Code} ({Option.OPTION_IDENTIFIER}{opt.LongCode}) {opt.HelpText}");
-                // check usages
-                if (opt.Examples.Any())
-                {
-                    PrintLine($"\tExample:");
-                    opt.Examples.ToList().ForEach(x =>
-                    {
-                        PrintLine($"\t#{opt.Examples.ToList().IndexOf(x)}  {x.HelpText}: {x.Sample.ToCLIString()}");
-                    });
-                    PrintLine(" ");
-                }
+                PrintOption(opt);
             }
 
             if (this._Model.Examples.Any())
@@ -102,6 +71,51 @@ namespace CLIArgumentsParser.Core.Usages
         private void PrintSeparatorLine()
         {
             PrintLine("-------------------------------------------------------------------------------------------");
+        }
+
+        private void PrintVerb(Verb verb)
+        {
+            PrintLine($"\t{verb.Code}\t{verb.HelpText}");
+            PrintLine("\tOptions:");
+            foreach (var opt in verb.Options)
+            {
+                PrintLine($"\t\t{Option.OPTION_IDENTIFIER}{opt.Code} ({Option.OPTION_IDENTIFIER}{opt.LongCode}) {opt.HelpText}");
+                StringBuilder options = new StringBuilder();
+                options.Append($"Mandatory: {opt.Mandatory}");
+                if (opt.DefaultValue != null)
+                    options.Append($", Default: {opt.DefaultValue.ToString()}");
+
+                if (opt.AvailableValues != null && opt.AvailableValues.Any())
+                    options.Append($", Admitted Values: {String.Join(";", opt.AvailableValues)}");
+
+                PrintLine($"\t\t{options.ToString()}");
+            }
+
+            // check usages
+            if (verb.Examples.Any())
+            {
+                PrintLine($"\tExample:");
+                verb.Examples.ToList().ForEach(x =>
+                {
+                    PrintLine($"\t#{verb.Examples.ToList().IndexOf(x)}  {x.HelpText}: {x.Sample.ToCLIString()}");
+                });
+                PrintLine(" ");
+            }
+        }
+
+        private void PrintOption(Option opt)
+        {
+            PrintLine($"\t{Option.OPTION_IDENTIFIER}{opt.Code} ({Option.OPTION_IDENTIFIER}{opt.LongCode}) {opt.HelpText}");
+            // check usages
+            if (opt.Examples.Any())
+            {
+                PrintLine($"\tExample:");
+                opt.Examples.ToList().ForEach(x =>
+                {
+                    PrintLine($"\t#{opt.Examples.ToList().IndexOf(x)}  {x.HelpText}: {x.Sample.ToCLIString()}");
+                });
+                PrintLine(" ");
+            }
         }
     }
 }
