@@ -188,6 +188,61 @@ namespace CLIArgumentsParser.Core
             return parsedArguments;
         }
 
+        private void ParseOption<T>(string arg, T parsedArguments) where T : CLIArguments
+        {
+            if (String.IsNullOrEmpty(arg))
+                throw new ArgumentNullException(nameof(arg));
+            if (!arg.StartsWith(Option.OPTION_IDENTIFIER))
+                throw new InvalidOperationException($"Invalid Option: {arg} has to start with {Option.OPTION_IDENTIFIER}");
+
+            // get the tokens
+            var tokenGenerator = new TokenGenerator(new List<string>() { Option.OPTION_IDENTIFIER });
+            var tokens = tokenGenerator.TokenizeThisString(arg).ToList();
+            if (tokens.Count != 1)
+                throw new InvalidOperationException("Unable to get tokens from Option " + arg);
+
+            // analyze the option
+            string argumentKey = tokens[0].Name;
+
+            // get information
+            var optionDefinition = this._Model.Options.Single(x => x.Code == argumentKey || x.LongCode == argumentKey);
+            var p = this._Model.OptionPropertyRegistry[optionDefinition.LongCode];
+            // parse the option
+            var parser = new OptionParser(optionDefinition);
+            var optionValue = parser.Parse(tokens);
+            // set the proper value
+            p.SetValue(parsedArguments, optionValue);
+        }
+
+        private void ParseVerb<T>(string arg, T parsedArguments) where T : CLIArguments
+        {
+            if (String.IsNullOrEmpty(arg))
+                throw new ArgumentNullException(nameof(arg));
+            if (!arg.StartsWith(Verb.VERB_IDENTIFIER))
+                throw new InvalidOperationException($"Invalid Verb: {arg} has to start with {Verb.VERB_IDENTIFIER}");
+
+            // get the tokens
+            var tokenGenerator = new TokenGenerator(new List<string>() { Verb.VERB_IDENTIFIER, Option.OPTION_IDENTIFIER });
+            var tokens = tokenGenerator.TokenizeThisString(arg).ToList();
+            if (tokens.Count == 0)
+                throw new InvalidOperationException("Unable to get tokens from Verb " + arg);
+            // the first token must to be the verb, with value null
+            if (!String.IsNullOrEmpty(tokens[0].Value))
+                throw new InvalidOperationException("Unable to get tokens from Verb " + arg);
+
+            // analyze the option
+            string argumentKey = tokens[0].Name;
+
+            // get information
+            var verbDefinition = this._Model.Verbs.Single(x => x.Name == argumentKey);
+            var p = this._Model.VerbPropertyRegistry[verbDefinition.Name];
+            // parse the verb 
+            var parser = new VerbParser(verbDefinition);
+            var optionValue = parser.Parse(tokens);
+            // set the proper value
+            p.SetValue(parsedArguments, optionValue);
+        }
+
         private void ParseArguments<T>(string[] args, T parsedArguments, out List<KeyValuePair<PropertyInfo, Option>> options, out List<KeyValuePair<PropertyInfo, Verb>> verbs) where T : CLIArguments
         {
             // output argumetnts
@@ -218,44 +273,9 @@ namespace CLIArgumentsParser.Core
                 // analyze the option
                 string argumentKey = string.Empty;
                 if (isOption)
-                {
-                    // get the tokens
-                    var tokenGenerator = new TokenGenerator(new List<string>() { Option.OPTION_IDENTIFIER });
-                    var tokens = tokenGenerator.TokenizeThisString(arg).ToList();
-                    if (tokens.Count != 1)
-                        throw new InvalidOperationException("Unable to get tokens from Option " + arg);
-                    argumentKey = tokens[0].Name;
-
-                    // get information
-                    var optionDefinition = this._Model.Options.Single(x => x.Code == argumentKey || x.LongCode == argumentKey);
-                    var p = this._Model.OptionPropertyRegistry[optionDefinition.LongCode];
-                    // parse the option
-                    var parser = new OptionParser(optionDefinition);
-                    var optionValue = parser.Parse(tokens);
-                    // set the proper value
-                    p.SetValue(parsedArguments, optionValue);
-                }
+                    ParseOption<T>(arg, parsedArguments);
                 else if (isVerb)
-                {
-                    // get the tokens
-                    var tokenGenerator = new TokenGenerator(new List<string>() { Verb.VERB_IDENTIFIER, Option.OPTION_IDENTIFIER });
-                    var tokens = tokenGenerator.TokenizeThisString(arg).ToList();
-                    if (tokens.Count == 0)
-                        throw new InvalidOperationException("Unable to get tokens from Verb " + arg);
-                    // the first token must to be the verb, with value null
-                    if (!String.IsNullOrEmpty(tokens[0].Value))
-                        throw new InvalidOperationException("Unable to get tokens from Verb " + arg);
-                    argumentKey = tokens[0].Name;
-
-                    // get information
-                    var verbDefinition = this._Model.Verbs.Single(x => x.Name == argumentKey);
-                    var p = this._Model.VerbPropertyRegistry[verbDefinition.Name];
-                    // parse the verb 
-                    var parser = new VerbParser(verbDefinition);
-                    var optionValue = parser.Parse(tokens);
-                    // set the proper value
-                    p.SetValue(parsedArguments, optionValue);
-                }
+                    ParseVerb<T>(arg, parsedArguments);
                 else
                 {
                     // no matching item!
