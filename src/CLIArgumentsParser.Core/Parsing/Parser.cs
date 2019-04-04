@@ -271,7 +271,6 @@ namespace CLIArgumentsParser.Core
                     throw new InvalidCLIArgumentException($"Unrecognized argument: {arg}", arg);
 
                 // analyze the option
-                string argumentKey = string.Empty;
                 if (isOption)
                     ParseOption<T>(arg, parsedArguments);
                 else if (isVerb)
