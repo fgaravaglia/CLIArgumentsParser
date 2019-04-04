@@ -60,10 +60,8 @@ namespace CLIArgumentsParser.Core.Verbs
             Dictionary<PropertyInfo, OptionDefinitionAttribute> alreadyConsidered = new Dictionary<PropertyInfo, OptionDefinitionAttribute>();
             foreach (var token in tokens)
             {
-                // find correspongin attribute
-                var attribute = optionDefinitions.Values.SingleOrDefault(x => x.Code == token.Name || x.LongCode == token.Name);
-                if (attribute == null)
-                    throw new InvalidCLIArgumentException($"Unable to find option {token.Name} for verb {targetTokens.First().Name}", targetTokens.First().Name);
+                // find corresponding attribute
+                var attribute = AssertOptionAttributeExists(targetTokens.First().Name, token, optionDefinitions);
                 var targetProperty = optionDefinitions.Single(x => x.Value.Code == token.Name || x.Value.LongCode == token.Name).Key;
 
                 // parse the value
@@ -95,5 +93,14 @@ namespace CLIArgumentsParser.Core.Verbs
             return returnValue;
         }
 
+        private OptionDefinitionAttribute AssertOptionAttributeExists(string verb, Token token, Dictionary<PropertyInfo, OptionDefinitionAttribute> optionDefinitions)
+        {
+            // find correspongin attribute
+            var attribute = optionDefinitions.Values.SingleOrDefault(x => x.Code == token.Name || x.LongCode == token.Name);
+            if (attribute == null)
+                throw new InvalidCLIArgumentException($"Unable to find option {token.Name} for verb {verb}", verb);
+
+            return attribute;
+        }
     }
 }
