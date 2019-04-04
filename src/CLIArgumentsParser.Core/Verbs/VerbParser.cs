@@ -48,45 +48,50 @@ namespace CLIArgumentsParser.Core.Verbs
             // instance the value
             var returnValue = Activator.CreateInstance(this._Model.TargetType);
 
-            // crete the verb option
-            if (targetTokens.Any())
-            {
-                // I need to parse the options
-                var tokens = targetTokens.Skip(1).ToList();
-                // get properties to map
-                var optionDefinitions = OptionDefinitionAttributeHelper.ExtractPropertiesMarkedWithOptionAttribute(this._Model.TargetType);
-                Dictionary<PropertyInfo, OptionDefinitionAttribute> alreadyConsidered = new Dictionary<PropertyInfo, OptionDefinitionAttribute>();
-                foreach (var token in tokens)
-                {
-                    // find correspongin attribute
-                    var attribute = optionDefinitions.Values.SingleOrDefault(x => x.Code == token.Name || x.LongCode == token.Name);
-                    if (attribute == null)
-                        throw new InvalidCLIArgumentException($"Unable to find option {token.Name} for verb {targetTokens.First().Name}", targetTokens.First().Name);
-                    var targetProperty = optionDefinitions.Single(x => x.Value.Code == token.Name || x.Value.LongCode == token.Name).Key;
-                    // parse the value
-                    var optionParser = new OptionParser(Option.FromAttribute(attribute).OnTargetProperty(targetProperty.PropertyType));
-                    var outputValue = optionParser.Parse(token.AsNaturalString());
-                    // update the value
-                    targetProperty.SetValue(returnValue, outputValue);
-                    // already managed
-                    alreadyConsidered.Add(targetProperty, attribute);
-                }
+            // no token: return the empty option class
+            if (!targetTokens.Any())
+                return returnValue;
 
-                // considered not managed
-                foreach (var opt in optionDefinitions)
+            // I need to parse the options
+            var tokens = targetTokens.Skip(1).ToList();
+
+            // get properties to map
+            var optionDefinitions = OptionDefinitionAttributeHelper.ExtractPropertiesMarkedWithOptionAttribute(this._Model.TargetType);
+            Dictionary<PropertyInfo, OptionDefinitionAttribute> alreadyConsidered = new Dictionary<PropertyInfo, OptionDefinitionAttribute>();
+            foreach (var token in tokens)
+            {
+                // find correspongin attribute
+                var attribute = optionDefinitions.Values.SingleOrDefault(x => x.Code == token.Name || x.LongCode == token.Name);
+                if (attribute == null)
+                    throw new InvalidCLIArgumentException($"Unable to find option {token.Name} for verb {targetTokens.First().Name}", targetTokens.First().Name);
+                var targetProperty = optionDefinitions.Single(x => x.Value.Code == token.Name || x.Value.LongCode == token.Name).Key;
+
+                // parse the value
+                var optionParser = new OptionParser(Option.FromAttribute(attribute).OnTargetProperty(targetProperty.PropertyType));
+                var outputValue = optionParser.Parse(token.AsNaturalString());
+
+                // update the value
+                targetProperty.SetValue(returnValue, outputValue);
+
+                // already managed
+                alreadyConsidered.Add(targetProperty, attribute);
+            }
+
+            // considered not managed
+            foreach (var opt in optionDefinitions)
+            {
+                var definition = alreadyConsidered.Values.SingleOrDefault(x => x.Code == opt.Value.Code);
+                if (definition != null)
+                    continue;
+                if (opt.Value.Mandatory)
+                    throw new InvalidCLIArgumentException($"Mandatory option {opt.Value.Code} not found in {this._Model.TargetType.Name}", "opt.Value.Code");
+                if (opt.Value.DefaultValue != null)
                 {
-                    var definition = alreadyConsidered.Values.SingleOrDefault(x => x.Code == opt.Value.Code);
-                    if (definition != null)
-                        continue;
-                    if (opt.Value.Mandatory)
-                        throw new InvalidCLIArgumentException($"Mandatory option {opt.Value.Code} not found in {this._Model.TargetType.Name}", "opt.Value.Code");
-                    if (opt.Value.DefaultValue != null)
-                    {
-                        var targetProperty = opt.Key;
-                        targetProperty.SetValue(returnValue, opt.Value.DefaultValue);
-                    }
+                    var targetProperty = opt.Key;
+                    targetProperty.SetValue(returnValue, opt.Value.DefaultValue);
                 }
             }
+
             return returnValue;
         }
 
