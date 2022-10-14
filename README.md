@@ -7,7 +7,6 @@ Library to easily manage and parse CLI arguments
 
 Current Version: <b>Stable - 1.1</b>: branch MASTER
 
-
 Main Features
 ----------------------------------
 - define a model of usage for your CLI applications
