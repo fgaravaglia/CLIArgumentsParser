@@ -1,10 +1,11 @@
 # CLIArgumentsParser
 Library to easily manage and parse CLI arguments
 
-[![Build Status](https://garaproject.visualstudio.com/CLIArgumentParser/_apis/build/status/fgaravaglia.CLIArgumentsParser?branchName=master)](https://garaproject.visualstudio.com/CLIArgumentParser/_build/latest?definitionId=9&branchName=master)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=CLIArgumentParserLibrary&metric=alert_status)](https://sonarcloud.io/dashboard?id=CLIArgumentParserLibrary)
+| Branch | Status |
+|-|-|
+| master | |
 
-Current Version: <b>Stable - 1.1</b> [![Build Status](https://garaproject.visualstudio.com/CLIArgumentParser/_apis/build/status/CLIArgumentsParser-CI-Release1.1?branchName=Release1.1)](https://garaproject.visualstudio.com/CLIArgumentParser/_build/latest?definitionId=20&branchName=Release1.1)
+Current Version: <b>Stable - 1.1</b>: branch MASTER
 
 
 Main Features
@@ -15,70 +16,75 @@ Main Features
 - Print automatic helper on CLI usage
 
 # How to define an Usage Model
-To define you model, create a class inheriting from CliArguments one.
+To define you model, create a class inheriting from CliCommand one.
 
-```
-public class TestArguments : CLIArguments
-{
-  [LOVOptionDefinition("v", "verbosity", "Sets the verbosity of logging", true, new string[] { "DEBUG", "INFO", "WARN", "ERR"})]
-  public string Verbosity { get; set; }
-
-  [OptionDefinition("s", "singleOutput", "Writes the output in a single file or not")]
-  public bool UseSingleFileAsOutput { get; set; }
-
-  public CopyFilesWith1MandatoryOption CopyWithArguments { get; set; }
-}
-
-[VerbDefinition("copy", "copy files from SRC to OUTPUT")]
-public class CopyFilesWith1MandatoryOption : CLIArguments
-{
-  [OptionDefinition("src", "source", "source folder to use to copy files", mandatory: true)]
-  public string SrcFolder { get; set; }
-}
+```c#
+ class ScanCommand : CliCommand
+ {
+    public ScanCommand() : base("scan", "Scan the target folder tree")
+    {}
+ }
 ```
 
-there are 2 different entities in the model: Verbs and Options
-- Verbs stand for action that CLI has to do (in the example, Copying files).
-  They are marked by <c>VerbDefinition</c> Attribute.
-- Options stand for additional settings you can apply. They are marked by <c>OptionDefinition</c> Attributes; the options can be defined on Verbs or on root class as well.
-  
+Remember to:
+- define the method _SetDefaultValues_ to fill rpoper option dictionary
+- define the properties of command, with decorators (see the paragraph)
+- define examples
+
 ## Option Definition
-You can define 2 kind of options, marked with 2 specific attributes.
+All properties you add should map an option of the verb, such:
+```c#
+        [Option(OPT_FOLDER, "Root folder to scan", isMandatory: true)]
+        public string Folder
+        {
+            get { return this.GetArgumentValue<ScanCommand, string>(x => x.Folder); }
+            set { this.AddOrUpdateArgument<ScanCommand, string>(x => x.Folder, value); }
+        }
+```
 
-<b>OptionDefinition</b>
+Then, remember to parse the string argument:
+```c#
+public override void ParseArgument(string[] tokens)
+        {
+            // take the expecetd value
+            if (tokens.Length == 1)
+            {
+                throw new NotImplementedException();
+            }
+            else
+            {
+                // validate option
+                switch (tokens[0])
+                {
+                    case OPT_FOLDER:
+                    case OPT_FILENAME_SEARCH_PATTERN:
+                    case OPT_FILECONTENT_SEARCH_PATTERN:
+                        this.UpdateArgumentValue(tokens[0], tokens[1]);
+                        break;
 
-It lets you to define an option that can be a boolean or a specific value; you can also set if it is mandatory or not.
-There is no specific check upon the option value.
+                    case OPT_TO:
+                        this.PersistedTo = tokens[1].Trim().ToUpperInvariant();
+                        break;
 
-<b>LOVOptionDefinition</b>
-
-It lets you to define an option that can be set inside an array of admitted values.
-
-## Verb Definition
-a Verb is defined as a CLiArguments as well, with its own options.
+                    default:
+                        throw new WrongOptionUsageException(this.Verb, tokens[0]);
+                }
+            }
+        }
+```
 
 
 # How to define examples
-Each CliArguments can define a list of example, to be use in Helper to understand how the argument can be specified.
-To use this feature, you should overwite the proper property, like in example:
+Each command shold contain a list of example, to understand how to use it.
+So far, you have to complete the abstract method:
 
-```
-public override string ToCLIString()
-{
-  StringBuilder builder = new StringBuilder();
-
-  builder.Append($" --v={Verbosity}");
-  if (UseSingleFileAsOutput)
-    builder.Append($" --s");
-
-  return builder.ToString();
-}
-
-protected override IEnumerable<CLIUsageExample> BuildExamples()
-{
-  var list = new List<CLIUsageExample>();
-  list.Add(new CLIUsageExample("Set custom verbsity", new OnlyOptionsArguments() { Verbosity = "WARN" }));
-  list.Add(new CLIUsageExample("Save output in a single file", new OnlyOptionsArguments() { UseSingleFileAsOutput = true }));
-  return list;
-}
+```c#
+        public override List<CliCommandExample> Examples()
+        {
+            return new List<CliCommandExample>()
+            {
+                new CliCommandExample("Scan the target folder to search *.csproj Files, containing the text \"NugetPackages\" and save a CSV files with output",
+                                        ScanCommand.AsExampleFor(@"C:\Temp\MyFolder", ".csproj", @"\NugetPackages\", "CSV"))
+            };
+        }
 ```
