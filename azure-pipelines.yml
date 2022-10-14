@@ -71,19 +71,19 @@ steps:
       InformationalVersion: "$(Build.BuildNumber)"
 
   ############ INFRASTRUCTURE ############################
-  - template: .\devops\Templates\dotnet-build.yaml
+  - template: .\devops\templates\dotnet-build.yaml
     parameters:
       projPath: src/CliArgumentParser
       projName: CliArgumentParser
 
-  - template: .\devops\Templates\dotnet-build.yaml
+  - template: .\devops\templates\dotnet-build.yaml
     parameters:
       projPath: src/CliArgumentParser.Tests
       projName: CliArgumentParser.Tests
       publishRequired: false
 
   ############################## TEST #################################
-  - template: .\devops\Templates\dotnet-test.yaml
+  - template: .\devops\templates\dotnet-test.yaml
     parameters:
       projPath: src/CliArgumentParser.Tests
       projName: CliArgumentParser.Tests
