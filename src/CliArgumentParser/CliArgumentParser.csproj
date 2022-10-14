@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Company>Innova Solutions</Company>
+    <Authors>FG</Authors>
+    <Description>Library to parse command line arguments</Description>
+    <Copyright>FG 2022</Copyright>
+    <VersionNumber>1.1.0.0</VersionNumber>
+  </PropertyGroup>
+
+</Project>

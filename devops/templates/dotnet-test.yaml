@@ -1,0 +1,45 @@
+parameters:
+  - name: projPath
+    default: ""
+
+  - name: projName
+    displayName: "name of csProj file (without extension)"
+    default: ""
+
+  - name: SplitByTestCategory
+    type: boolean
+    default: false
+
+steps:
+  # - script: dotnet test ${{ parameters.projPath }}/${{ parameters.projName }}.csproj --logger trx --filter TestCategory=INTEGRATION
+  #   displayName: "Run Test on ${{ parameters.projName }}"
+  #   condition: eq(${{ parameters.SplitByTestCategory }}, true)
+
+  # - script: dotnet test ${{ parameters.projPath }}/${{ parameters.projName }}.csproj --logger trx
+  #   displayName: "Run all Tests on ${{ parameters.projName }}"
+  #   condition: eq(${{ parameters.SplitByTestCategory }}, false)
+
+  - task: DotNetCoreCLI@2
+    displayName: "dotnet test on ${{ parameters.projName }}"
+    inputs:
+      command: test
+      projects: "${{ parameters.projPath }}/${{ parameters.projName }}.csproj"
+      arguments: '--logger trx --configuration Debug --collect "XPlat Code coverage" -- RunConfiguration.DisableAppDomain=true'
+      testRunTitle: ${{ parameters.projName }}
+
+  # - task: PublishTestResults@2
+  #   displayName: "Publish test results for ${{ parameters.projName }}"
+  #   condition: succeededOrFailed()
+  #   inputs:
+  #     testRunner: VSTest
+  #     testRunTitle: ${{ parameters.projName }}
+  #     testResultsFiles: "**/${{ parameters.projName }}/**/*.trx"
+
+  - script: 'reportgenerator -reports:$(Agent.TempDirectory)/**/coverage.cobertura.xml -targetdir:$(Build.SourcesDirectory)/coverlet/reports -reporttypes:"Cobertura"'
+    displayName: "Create Coveage reports"
+
+  - task: PublishCodeCoverageResults@1
+    displayName: "Publish code coverage"
+    inputs:
+      codeCoverageTool: Cobertura
+      summaryFileLocation: "$(Build.SourcesDirectory)/coverlet/reports/Cobertura.xml"

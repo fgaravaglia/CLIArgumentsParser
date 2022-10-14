@@ -1,0 +1,97 @@
+trigger:
+  branches:
+    include:
+      - master
+    exclude:
+      - develop
+      - release-candidate
+
+  paths:
+    include:
+      - src
+    exclude:
+      - script/*
+      - libs/*
+      - devops/*
+
+name: CLIArgumentParser-CI
+
+pool:
+  vmImage: "ubuntu-latest"
+
+variables:
+  buildConfiguration: "Release"
+  TargetFramework: "net6.0"
+
+parameters:
+  - name: MajorVersion
+    displayName: "Major Version"
+    default: 1
+
+  - name: MinorVersion
+    displayName: "Minor Version"
+    default: 1
+  - name: authors
+    displayName: "Names of authors of the target package"
+    default: "FG"
+  - name: company
+    displayName: "Company that produces the target package"
+    default: "Innova Solutions"
+  - name: copyright
+    displayName: "Copyright"
+    default: "FG 2022"
+
+steps:
+  #### use the right version of .Net core
+  - task: UseDotNet@2
+    displayName: Use .NET CORE target version
+    inputs:
+      packageType: "sdk"
+      version: "6.x"
+
+  - script: |
+      echo "Build ID      => $(Build.BuildId)"
+      echo "Build Number  => $(Build.BuildNumber)"
+      dotnet tool install --global dotnet-reportgenerator-globaltool
+    displayName: "Install ReportGenerator tool"
+
+  - task: Assembly-Info-NetCore@2
+    displayName: Set Assembly Info
+    inputs:
+      Path: "$(Build.SourcesDirectory)"
+      FileNames: "**/*.csproj"
+      InsertAttributes: true
+      FileEncoding: "auto"
+      WriteBOM: false
+      Authors: "${{ parameters.authors }}"
+      Company: "${{ parameters.company }}"
+      Copyright: "${{ parameters.copyright }}"
+      VersionNumber: "${{ parameters.MajorVersion }}.${{ parameters.MinorVersion }}.$(Build.BuildId).0"
+      FileVersionNumber: "${{ parameters.MajorVersion }}.${{ parameters.MinorVersion }}.$(Build.BuildId).0"
+      InformationalVersion: "$(Build.BuildNumber)"
+
+  ############ INFRASTRUCTURE ############################
+  - template: .\Templates\dotnet-build.yaml
+    parameters:
+      projPath: src/CliArgumentParser
+      projName: CliArgumentParser
+
+  - template: .\Templates\dotnet-build.yaml
+    parameters:
+      projPath: src/CliArgumentParser.Tests
+      projName: CliArgumentParser.Tests
+      publishRequired: false
+
+  ############################## TEST #################################
+  - template: .\Templates\dotnet-test.yaml
+    parameters:
+      projPath: src/CliArgumentParser.Tests
+      projName: CliArgumentParser.Tests
+
+  ############################## PUBLISH DROP #################################
+  - task: PublishBuildArtifacts@1
+    displayName: publish artifacts
+    inputs:
+      PathtoPublish: "$(Build.ArtifactStagingDirectory)"
+      ArtifactName: "drop"
+      publishLocation: "Container"
