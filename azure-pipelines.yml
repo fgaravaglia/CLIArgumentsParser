@@ -1,34 +1,97 @@
-# .NET Desktop
-# Build and run tests for .NET Desktop or Windows classic desktop solutions.
-# Add steps that publish symbols, save build artifacts, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/apps/windows/dot-net
-name: $(Build.DefinitionName)-$(date:yyyyMMdd).1.2.$(rev:.r)
-
 trigger:
-- master
+  branches:
+    include:
+      - master
+    exclude:
+      - develop
+      - release-candidate
+
+  paths:
+    include:
+      - src
+    exclude:
+      - script/*
+      - libs/*
+      - devops/*
+
+name: CLIArgumentParser-CI
 
 pool:
-  vmImage: 'VS2017-Win2016'
+  vmImage: "ubuntu-latest"
 
 variables:
-  solution: '**/*.sln'
-  buildPlatform: 'Any CPU'
-  buildConfiguration: 'Release'
+  buildConfiguration: "Release"
+  TargetFramework: "net6.0"
+
+parameters:
+  - name: MajorVersion
+    displayName: "Major Version"
+    default: 1
+
+  - name: MinorVersion
+    displayName: "Minor Version"
+    default: 1
+  - name: authors
+    displayName: "Names of authors of the target package"
+    default: "FG"
+  - name: company
+    displayName: "Company that produces the target package"
+    default: "Innova Solutions"
+  - name: copyright
+    displayName: "Copyright"
+    default: "FG 2022"
 
 steps:
-- task: NuGetToolInstaller@0
+  #### use the right version of .Net core
+  - task: UseDotNet@2
+    displayName: Use .NET CORE target version
+    inputs:
+      packageType: "sdk"
+      version: "6.x"
 
-- task: NuGetCommand@2
-  inputs:
-    restoreSolution: '$(solution)'
+  - script: |
+      echo "Build ID      => $(Build.BuildId)"
+      echo "Build Number  => $(Build.BuildNumber)"
+      dotnet tool install --global dotnet-reportgenerator-globaltool
+    displayName: "Install ReportGenerator tool"
 
-- task: VSBuild@1
-  inputs:
-    solution: '$(solution)'
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+  - task: Assembly-Info-NetCore@2
+    displayName: Set Assembly Info
+    inputs:
+      Path: "$(Build.SourcesDirectory)"
+      FileNames: "**/*.csproj"
+      InsertAttributes: true
+      FileEncoding: "auto"
+      WriteBOM: false
+      Authors: "${{ parameters.authors }}"
+      Company: "${{ parameters.company }}"
+      Copyright: "${{ parameters.copyright }}"
+      VersionNumber: "${{ parameters.MajorVersion }}.${{ parameters.MinorVersion }}.$(Build.BuildId).0"
+      FileVersionNumber: "${{ parameters.MajorVersion }}.${{ parameters.MinorVersion }}.$(Build.BuildId).0"
+      InformationalVersion: "$(Build.BuildNumber)"
 
-- task: VSTest@2
-  inputs:
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+  ############ INFRASTRUCTURE ############################
+  - template: .\devops\Templates\dotnet-build.yaml
+    parameters:
+      projPath: src/CliArgumentParser
+      projName: CliArgumentParser
+
+  - template: .\devops\Templates\dotnet-build.yaml
+    parameters:
+      projPath: src/CliArgumentParser.Tests
+      projName: CliArgumentParser.Tests
+      publishRequired: false
+
+  ############################## TEST #################################
+  - template: .\devops\Templates\dotnet-test.yaml
+    parameters:
+      projPath: src/CliArgumentParser.Tests
+      projName: CliArgumentParser.Tests
+
+  ############################## PUBLISH DROP #################################
+  - task: PublishBuildArtifacts@1
+    displayName: publish artifacts
+    inputs:
+      PathtoPublish: "$(Build.ArtifactStagingDirectory)"
+      ArtifactName: "drop"
+      publishLocation: "Container"
