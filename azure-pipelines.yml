@@ -14,8 +14,6 @@ trigger:
       - libs/*
       - devops/*
 
-name: CLIArgumentParser-CI
-
 pool:
   vmImage: "ubuntu-latest"
 
@@ -27,7 +25,6 @@ parameters:
   - name: MajorVersion
     displayName: "Major Version"
     default: 1
-
   - name: MinorVersion
     displayName: "Minor Version"
     default: 1
