@@ -6,10 +6,9 @@ trigger:
       - develop
       - release-candidate
       - CliArgumentParser-1.1
-# 
-#   paths:
-#     include:
-#       - src
+  paths:
+    include:
+      - src
 #     exclude:
 #       - script/*
 #       - libs/*
@@ -33,23 +32,18 @@ parameters:
   - name: MajorVersion
     displayName: "Major Version"
     default: 1
-    readonly: true
   - name: MinorVersion
     displayName: "Minor Version"
     default: 1
-    readonly: true
   - name: authors
     displayName: "Names of authors of the target package"
     default: "FG"
-    readonly: true
   - name: company
     displayName: "Company that produces the target package"
     default: "Innova Solutions"
-    readonly: true
   - name: copyright
     displayName: "Copyright"
     default: "FG 2022"
-    readonly: true
 
 steps:
   #### use the right version of .Net core
