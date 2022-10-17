@@ -1,20 +1,27 @@
-trigger:
-  branches:
-    include:
+# trigger:
+#   branches:
+#     include:
+#       - master
+#     exclude:
+#       - develop
+#       - release-candidate
+#       - CliArgumentParser-1.1
+# 
+#   paths:
+#     include:
+#       - src
+#     exclude:
+#       - script/*
+#       - libs/*
+#       - devops/*
+# 
+schedules:
+  - cron: "0 12 * * 0"
+    displayName: Weekly Sunday build
+    branches:
+      include:
       - master
-    exclude:
-      - develop
-      - release-candidate
-      - CliArgumentParser-1.1
-
-  paths:
-    include:
-      - src
-    exclude:
-      - script/*
-      - libs/*
-      - devops/*
-
+    
 pool:
   vmImage: "ubuntu-latest"
 
