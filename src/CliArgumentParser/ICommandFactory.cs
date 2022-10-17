@@ -31,7 +31,9 @@ namespace CliArgumentParser
         /// <returns></returns>
         IEnumerable<CliCommand> GetAvailableCommands();
     }
-
+    /// <summary>
+    /// concrete implementation for Command Factory
+    /// </summary>
     public class CommandFactory : ICommandFactory
     {
         readonly Dictionary<string, Type> _Registry;
