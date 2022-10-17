@@ -1,11 +1,11 @@
-# trigger:
-#   branches:
-#     include:
-#       - master
-#     exclude:
-#       - develop
-#       - release-candidate
-#       - CliArgumentParser-1.1
+trigger:
+  branches:
+    include:
+      - master
+    exclude:
+      - develop
+      - release-candidate
+      - CliArgumentParser-1.1
 # 
 #   paths:
 #     include:
