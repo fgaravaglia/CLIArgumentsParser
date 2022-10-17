@@ -5,6 +5,7 @@ trigger:
     exclude:
       - develop
       - release-candidate
+      - CliArgumentParser-1.1
 
   paths:
     include:
