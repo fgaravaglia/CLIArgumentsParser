@@ -40,7 +40,6 @@ parameters:
   - name: copyright
     displayName: "Copyright"
     default: "FG 2022"
-
   - name: PublishPackage
     displayName: "Publish Package to Nuget.Org"
     type: boolean
