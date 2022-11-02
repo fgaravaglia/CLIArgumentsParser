@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -18,6 +19,12 @@ namespace CliArgumentParser.ErrorManagement
             this.Option  = "";
         }
 
+        public WrongOptionUsageException(string verb, Type attributeType) : base($"Wrong Usage: Unmanaged decorator of type {attributeType?.Name} found on Command {verb}")
+        {
+            this.Verb = verb;
+            this.Option = "";
+        }
+
         public WrongOptionUsageException(string verb, string option) : base($"Wrong Usage: invalid option {option} for {verb}")
         {
             this.Verb = verb;
@@ -28,6 +35,11 @@ namespace CliArgumentParser.ErrorManagement
         {
             this.Verb = verb;
             this.Option = option;
+        }
+
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            base.GetObjectData(info, context);
         }
     }
 }

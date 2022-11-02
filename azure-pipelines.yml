@@ -81,10 +81,11 @@ steps:
       scannerMode: "MSBuild"
       projectKey: "fgaravaglia_CLIArgumentsParser"
       projectName: "CLIArgumentsParser"
+      projectVersion: "${{ parameters.MajorVersion }}.${{ parameters.MinorVersion }}"
       extraProperties: |
         # Additional properties that will be passed to the scanner, 
         # Put one key=value per line, example:
-        sonar.exclusions=**/obj/**,**/*.dll
+        sonar.exclusions=**/obj/**,**/*.dll, src/CliArgumentParser.Tests/**/*.*
         sonar.cs.opencover.reportsPaths=$(Build.SourcesDirectory)/**/coverage.opencover.xml
         sonar.cs.vstest.reportsPaths=$(Agent.TempDirectory)/*.trx
 
