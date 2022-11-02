@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace CliArgumentParser.ErrorManagement
 {
+    [Serializable]
     public class WrongOptionUsageException : CliArgumentParserException
     {
         public string Verb { get; private set; }
@@ -17,6 +18,12 @@ namespace CliArgumentParser.ErrorManagement
         { 
             this.Verb = "";
             this.Option  = "";
+        }
+
+        protected WrongOptionUsageException(SerializationInfo info, StreamingContext context) : base(info, context)
+        {
+            this.Verb = "";
+            this.Option = "";
         }
 
         public WrongOptionUsageException(string verb, Type attributeType) : base($"Wrong Usage: Unmanaged decorator of type {attributeType?.Name} found on Command {verb}")

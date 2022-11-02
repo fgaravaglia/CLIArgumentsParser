@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace CliArgumentParser.ErrorManagement
 {
+    [Serializable]
     public class UnknownVerbException : CliArgumentParserException
     {
         public string Verb { get; private set; }
@@ -20,6 +21,10 @@ namespace CliArgumentParser.ErrorManagement
         {
             this.Verb = verb;
         }
+        protected UnknownVerbException(SerializationInfo info, StreamingContext context) : base(info, context)
+        {
+            this.Verb = "";
+        }
 
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
@@ -30,5 +35,6 @@ namespace CliArgumentParser.ErrorManagement
 
             info.AddValue("Verb", Verb);
         }
+
     }
 }

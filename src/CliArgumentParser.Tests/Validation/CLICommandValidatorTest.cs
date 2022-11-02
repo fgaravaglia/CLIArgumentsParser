@@ -55,7 +55,7 @@ namespace CliArgumentParser.Tests.Validation
             Assert.Pass();
         }
 
-        ScanCommand GetValidCommand()
+        static ScanCommand GetValidCommand()
         {
             ScanCommand cmd = new ScanCommand();
             cmd.Folder = @"c:\temp\test\uc.q8f.ua.blotter";

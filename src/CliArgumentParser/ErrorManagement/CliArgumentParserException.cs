@@ -5,6 +5,7 @@ using System.Text;
 
 namespace CliArgumentParser.ErrorManagement
 {
+    [Serializable]
     public class CliArgumentParserException : Exception
     {
         public CliArgumentParserException() : base()
@@ -13,6 +14,11 @@ namespace CliArgumentParser.ErrorManagement
         public CliArgumentParserException(string message) : base(message)
         {
         }
+
+        protected CliArgumentParserException(SerializationInfo info, StreamingContext context) : base(info, context)
+        {
+        }
+        
 
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace CliArgumentParser.Decorator
 {
-    [Serializable]
+    [AttributeUsage(AttributeTargets.Property)]
     public class OptionAttribute : Attribute
     {
         public string Name { get; private set; }

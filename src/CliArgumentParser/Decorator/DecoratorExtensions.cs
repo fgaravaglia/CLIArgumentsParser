@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
+using CliArgumentParser.ErrorManagement;
 
 namespace CliArgumentParser.Decorator
 {
@@ -17,9 +18,9 @@ namespace CliArgumentParser.Decorator
             var property = source.GetPropertyInfo<TSource, TProperty>(propertyLambda);
             var decorators = DecoratorExtensions.ExtractDecoratorsFromProperty(property);
             if (!decorators.Any())
-                throw new ApplicationException($"Unable to find Decorators for property {property.Name}");
+                throw new CliArgumentParserException($"Unable to find Decorators for property {property.Name}");
             if (decorators.Count() > 1)
-                throw new ApplicationException($"Found more than one Decorator for property {property.Name}");
+                throw new CliArgumentParserException($"Found more than one Decorator for property {property.Name}");
             return decorators.First();
         }
 
