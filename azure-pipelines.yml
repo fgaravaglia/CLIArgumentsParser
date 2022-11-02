@@ -50,7 +50,7 @@ variables:
   buildConfiguration: "Release"
   targetFramework: "6.x"
   nugetVersion: ${{ parameters.MajorVersion }}.${{ parameters.MinorVersion }}.$(Build.BuildId)
-  NuGetApiKey: xxxxx
+  NuGetApiKey: oy2ksj3v5irgsigozoiqvun23gqusxwuvo5xva27egfpqq
 
 steps:
   ##### use the right version of .Net core
@@ -60,9 +60,16 @@ steps:
       packageType: "sdk"
       version: $(targetFramework)
 
+  - task: NuGetToolInstaller@1
+    displayName: "Use Nuget.exe"
+    inputs:
+      checkLatest: true
+
   - script: |
       echo "Build ID      => $(Build.BuildId)"
       echo "Build Number  => $(Build.BuildNumber)"
+      echo "Nuget ApiKey  => $(NuGetApiKey)"
+      echo "              => $(NugetCredentials.apiKey)"
       dotnet tool install --global dotnet-reportgenerator-globaltool
     displayName: "Install ReportGenerator tool"
 
@@ -102,5 +109,5 @@ steps:
       arguments: >
         push $(Build.ArtifactStagingDirectory)/*.nupkg
         -s https://api.nuget.org/v3/index.json
-        -k $(NugetCredentials.apiKey)
+        -k $(NuGetApiKey)
     condition: eq(${{ parameters.PublishPackage }}, true)
