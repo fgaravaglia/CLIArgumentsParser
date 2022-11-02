@@ -59,7 +59,13 @@ steps:
       packageType: "sdk"
       version: $(targetFramework)
 
-  - template: .\devops\Templates\dotnet-package-pack.yaml
+  - script: |
+      echo "Build ID      => $(Build.BuildId)"
+      echo "Build Number  => $(Build.BuildNumber)"
+      dotnet tool install --global dotnet-reportgenerator-globaltool
+    displayName: "Install ReportGenerator tool"
+
+  - template: .\devops\templates\dotnet-package-pack.yaml
     parameters:
       projPath: src/CliArgumentParser
       projName: CliArgumentParser
