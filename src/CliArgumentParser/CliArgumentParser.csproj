@@ -17,19 +17,20 @@
     <VersionNumber>1.2.0.0</VersionNumber>
     <PackageProjectUrl>https://github.com/fgaravaglia/CLIArgumentsParser</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/fgaravaglia/CLIArgumentsParser</RepositoryUrl>
     <PackageReleaseNotes>
 - Minor issues solved
 - Test Coverage increased
 - README file updated with usage details and samples
+- LICENSE specification
     </PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
-
     <None Include="..\..\README.md" Pack="true" PackagePath=""/>
-
+    <None Include="..\..\LICENSE" Pack="true" PackagePath=""/>
   </ItemGroup>
 
 </Project>
