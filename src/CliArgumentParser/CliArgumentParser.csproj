@@ -15,6 +15,7 @@
     <Version>1.1.0.0</Version>
     <VersionNumber>1.1.0.0</VersionNumber>
     <PackageProjectUrl>https://github.com/fgaravaglia/CLIArgumentsParser</PackageProjectUrl>
+    <PackageReadmeFile>https://github.com/fgaravaglia/CLIArgumentsParser/blob/master/README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/fgaravaglia/CLIArgumentsParser</RepositoryUrl>
   </PropertyGroup>
 
