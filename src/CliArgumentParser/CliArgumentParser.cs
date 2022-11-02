@@ -168,7 +168,7 @@ namespace CliArgumentParser
                 // apply default values if needed
                 cmd.SetDefaultValues();
 
-                var options = args.ToList<string>().Skip(1).ToList();
+                var options = args.Skip(1).ToList();
                 int optIndex = 0;
                 while (optIndex != -1)
                 {

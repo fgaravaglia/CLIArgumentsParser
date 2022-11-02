@@ -4,7 +4,6 @@ using System.Text;
 
 namespace CliArgumentParser.ErrorManagement
 {
-    [Serializable]
     public class CliArgumentParserException : Exception
     {
         public CliArgumentParserException() : base()

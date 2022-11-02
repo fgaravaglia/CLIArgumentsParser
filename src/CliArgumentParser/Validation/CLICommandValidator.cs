@@ -32,8 +32,7 @@ namespace CliArgumentParser.Validation
                 string? propValueString = "";
                 if(propValue != null)
                     propValueString = propValue.ToString();
-                string optionName = prop.Name;
-
+                    
                 // get decorators
                 var attributes = prop.ExtractDecoratorsFromProperty();
 
@@ -42,7 +41,7 @@ namespace CliArgumentParser.Validation
                     if (a.GetType() != typeof(OptionAttribute))
                         throw new ApplicationException($"Unmanaged decorator of type {a.GetType().FullName} found on Command {cmd.Verb} of type {cmd.GetType().FullName}");
 
-                    OptionAttribute attribute = (OptionAttribute)a;
+                    OptionAttribute attribute = a;
                     if (attribute.IsMandatory && propValue is null)
                         throw new WrongOptionUsageException(cmd.Verb, attribute.Name, "Option is Mandatory");
 

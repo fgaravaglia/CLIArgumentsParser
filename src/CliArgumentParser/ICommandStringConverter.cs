@@ -58,11 +58,9 @@ namespace CliArgumentParser
             var attributes = _Cmd.GetOptionAttribute();
             foreach (var attribute in attributes)
             {
-                if(attribute != null)
-                {
-                    string notes = attribute != null ? attribute.UsageNotes : "";
-                    printer.Append(attribute?.Name).Append("\t\t").Append(attribute?.Description).Append("; " + notes).AppendLine();
-                }
+                string notes = attribute != null ? attribute.UsageNotes : "";
+                printer.Append(attribute?.Name).Append("\t\t").Append(attribute?.Description).Append("; " + notes).AppendLine();
+
             }
             return printer.ToString();
         }

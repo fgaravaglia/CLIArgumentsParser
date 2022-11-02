@@ -77,7 +77,7 @@ steps:
     displayName: "Prepare analysis on SonarCloud"
     inputs:
       SonarCloud: "SonarQubeCloud"
-      organization: "fgaravaglia-github"
+      organization: "fgaravaglia"
       scannerMode: "MSBuild"
       projectKey: "fgaravaglia_CLIArgumentsParser"
       projectName: "CLIArgumentsParser"
