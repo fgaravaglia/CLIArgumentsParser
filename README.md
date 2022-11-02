@@ -8,11 +8,11 @@ Library to easily manage and parse CLI arguments
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=fgaravaglia_CLIArgumentsParser&metric=bugs)](https://sonarcloud.io/summary/new_code?id=fgaravaglia_CLIArgumentsParser)
 [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=fgaravaglia_CLIArgumentsParser&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=fgaravaglia_CLIArgumentsParser)
 
-Current Version: Stable - 1.2.1972 - branch MASTER
+Current Version: Stable - 1.2.1975 - branch MASTER
 
 To install it, use proper command:
 ```
-dotnet add package CliArgumentParser --version 1.2.1972
+dotnet add package CliArgumentParser --version 1.2.1975
 ```
 
 For more details about download, see [NuGet Web Site](https://www.nuget.org/packages/CliArgumentParser#readme-body-tab)
