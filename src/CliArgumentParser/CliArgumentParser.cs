@@ -67,6 +67,45 @@ namespace CliArgumentParser
             this._OccurredError = null;
         }
 
+        /// <summary>
+        /// Manages the excetion raised surint argument parser operation
+        /// </summary>
+        /// <param name="ex"></param>
+        /// <returns></returns>
+        Exception? CatchParsingException(Exception ex)
+        {
+            if(ex == null)
+                return ex;
+
+            CliArgumentParserException? parserEx = ex as CliArgumentParserException;
+            if(parserEx != null)
+            {
+                // manage specific types of errors raised from Parser
+                var exType = parserEx.GetType();
+                if (exType == typeof(WrongOptionUsageException)
+                    || exType == typeof(UnknownVerbException))
+                {
+                    bool managed = ManageError(parserEx);
+                    PrintUsage();
+                    if (!managed)
+                        return ex;
+                }
+                else
+                {
+                    Console.WriteLine("Missing Input!");
+                    PrintUsage();
+                    this._OccurredError = parserEx;
+                }
+                return null;
+            }
+            else
+            {
+                bool managed = ManageError(ex);
+                PrintUsage();
+                return !managed ? ex : null;
+            }
+        }
+
         bool ManageError(Exception ex)
         {
             this._OccurredError = ex;
@@ -188,30 +227,9 @@ namespace CliArgumentParser
 
                 this._ParsedCommand = cmd;
             }
-            catch (CliArgumentParserException parserEx)
-            {
-                // manage specific types of errors raised from Parser
-                var exType = parserEx.GetType();
-                if (exType == typeof(WrongOptionUsageException)
-                    || exType == typeof(UnknownVerbException))
-                {
-                    bool managed = ManageError(parserEx);
-                    PrintUsage();
-                    if (!managed)
-                        throw;
-                }
-                else
-                {
-                    Console.WriteLine("Missing Input!");
-                    PrintUsage();
-                    this._OccurredError = parserEx;
-                }
-            }
             catch (Exception ex)
             {
-                bool managed = ManageError(ex);
-                PrintUsage();
-                if (!managed)
+                if(CatchParsingException(ex) != null)
                     throw;
             }
         }

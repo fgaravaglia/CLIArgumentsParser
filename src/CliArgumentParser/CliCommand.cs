@@ -119,7 +119,7 @@ namespace CliArgumentParser
 
             var existing = this.Arguments.SingleOrDefault(x => x.Name == name);
             if (existing is null)
-                throw new ArgumentException(name, $"Argument not found!");
+                throw new ArgumentException( $"Argument not found!", nameof(name));
             else
             {
                 existing.UpdateValue(value);

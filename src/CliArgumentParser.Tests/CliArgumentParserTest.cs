@@ -25,7 +25,7 @@ namespace CliArgumentParser.Tests
         public void ParseArguments_WithNoArgs_HasErrorsButNoExceptionIsthrown()
         {
             //******* GIVEN
-            var myargs = new string[] { };
+            var myargs = Array.Empty<string>();
 
             //******* WHEN
             TryToRun(() => this._Parser.ParseArguments(myargs));
