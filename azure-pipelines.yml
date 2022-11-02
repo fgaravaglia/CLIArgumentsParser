@@ -53,7 +53,7 @@ variables:
   buildConfiguration: "Release"
   targetFramework: "6.x"
   nugetVersion: ${{ parameters.MajorVersion }}.${{ parameters.MinorVersion }}.$(Build.BuildId)
-  testReportFileName: coverage.cobertura.xml
+  testReportFileName: cobertura.xml
 
 steps:
   ##### use the right version of .Net core
