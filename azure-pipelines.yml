@@ -131,7 +131,7 @@ steps:
       command: "custom"
       custom: nuget
       arguments: >
-        push $(Build.ArtifactStagingDirectory)/CliArgumentParser.nupkg
+        push $(Build.ArtifactStagingDirectory)/*.nupkg
         -s https://api.nuget.org/v3/index.json
         -k ${{ parameters.NugetApiKey }}
     condition: eq(${{ parameters.PublishPackage }}, true)
