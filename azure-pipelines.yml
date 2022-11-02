@@ -73,6 +73,21 @@ steps:
       dotnet tool install --global dotnet-reportgenerator-globaltool
     displayName: "Install ReportGenerator tool"
 
+  - task: SonarCloudPrepare@1
+    displayName: "Prepare analysis on SonarCloud"
+    inputs:
+      SonarCloud: "SonarQubeCloud"
+      organization: "fgaravaglia-github"
+      scannerMode: "MSBuild"
+      projectKey: "fgaravaglia_CLIArgumentsParser"
+      projectName: "CLIArgumentsParser"
+      extraProperties: |
+        # Additional properties that will be passed to the scanner, 
+        # Put one key=value per line, example:
+        sonar.exclusions=**/obj/**,**/*.dll
+        sonar.cs.opencover.reportsPaths=$(Build.SourcesDirectory)/**/coverage.opencover.xml
+        sonar.cs.vstest.reportsPaths=$(Agent.TempDirectory)/*.trx
+
   - template: .\devops\templates\dotnet-package-pack.yaml
     parameters:
       projPath: src/CliArgumentParser
@@ -92,6 +107,14 @@ steps:
     parameters:
       projPath: src/CliArgumentParser.Tests
       projName: CliArgumentParser.Tests
+
+  - task: SonarCloudAnalyze@1
+    displayName: "Run Sonar Cloud Analysis"
+
+  - task: SonarCloudPublish@1
+    displayName: "Publish Sonar Cloud Analysis"
+    inputs:
+      pollingTimeoutSec: "300"
 
   ############################## PUBLISH DROP #################################
   - task: PublishBuildArtifacts@1
