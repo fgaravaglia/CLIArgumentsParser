@@ -50,6 +50,7 @@ variables:
   buildConfiguration: "Release"
   targetFramework: "6.x"
   nugetVersion: ${{ parameters.MajorVersion }}.${{ parameters.MinorVersion }}.$(Build.BuildId)
+  NuGetApiKey: xxxxx
 
 steps:
   ##### use the right version of .Net core
@@ -96,9 +97,10 @@ steps:
   - task: DotNetCoreCLI@2
     displayName: Push to Nuget.org
     inputs:
-      command: "push"
-      packagesToPush: "$(Build.ArtifactStagingDirectory)/*.nupkg"
-      nuGetFeedType: "external"
-      publishFeedCredentials: "Nuget.org"
-      allowPackageConflicts: true
+      command: "custom"
+      custom: nuget
+      arguments: >
+        push $(Build.ArtifactStagingDirectory)/*.nupkg
+        -s https://api.nuget.org/v3/index.json
+        -k $(NugetCredentials.apiKey)
     condition: eq(${{ parameters.PublishPackage }}, true)
