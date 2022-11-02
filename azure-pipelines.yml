@@ -59,7 +59,7 @@ steps:
       packageType: "sdk"
       version: $(targetFramework)
 
-  - template: .\Templates\dotnet-package-pack.yaml
+  - template: .\devops\Templates\dotnet-package-pack.yaml
     parameters:
       projPath: src/CliArgumentParser
       projName: CliArgumentParser
