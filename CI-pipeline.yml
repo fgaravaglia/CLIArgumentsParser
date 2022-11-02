@@ -19,10 +19,15 @@ name: CLIArgumentParser-CI
 pool:
   vmImage: "ubuntu-latest"
 
+variables:
+  buildConfiguration: "Release"
+  TargetFramework: "net6.0"
+
 parameters:
   - name: MajorVersion
     displayName: "Major Version"
     default: 1
+
   - name: MinorVersion
     displayName: "Minor Version"
     default: 1
@@ -36,33 +41,40 @@ parameters:
     displayName: "Copyright"
     default: "FG 2022"
 
-  - name: PublishPackage
-    displayName: "Publish Package to Nuget.Org"
-    type: booelan
-    default: False
-
-variables:
-  buildConfiguration: "Release"
-  targetFramework: "6.x"
-  nugetVersion: ${{ parameters.MajorVersion }}.${{ parameters.MinorVersion }}.$(Build.BuildId)
-
 steps:
- 
-steps:
-  ##### use the right version of .Net core
+  #### use the right version of .Net core
   - task: UseDotNet@2
-    displayName: Use .NET target version
+    displayName: Use .NET CORE target version
     inputs:
       packageType: "sdk"
-      version: $(targetFramework)
+      version: "6.x"
 
-  - template: .\Templates\dotnet-package-pack.yaml
+  - script: |
+      echo "Build ID      => $(Build.BuildId)"
+      echo "Build Number  => $(Build.BuildNumber)"
+      dotnet tool install --global dotnet-reportgenerator-globaltool
+    displayName: "Install ReportGenerator tool"
+
+  - task: Assembly-Info-NetCore@2
+    displayName: Set Assembly Info
+    inputs:
+      Path: "$(Build.SourcesDirectory)"
+      FileNames: "**/*.csproj"
+      InsertAttributes: true
+      FileEncoding: "auto"
+      WriteBOM: false
+      Authors: "${{ parameters.authors }}"
+      Company: "${{ parameters.company }}"
+      Copyright: "${{ parameters.copyright }}"
+      VersionNumber: "${{ parameters.MajorVersion }}.${{ parameters.MinorVersion }}.$(Build.BuildId).0"
+      FileVersionNumber: "${{ parameters.MajorVersion }}.${{ parameters.MinorVersion }}.$(Build.BuildId).0"
+      InformationalVersion: "$(Build.BuildNumber)"
+
+  ############ INFRASTRUCTURE ############################
+  - template: .\devops\templates\dotnet-build.yaml
     parameters:
       projPath: src/CliArgumentParser
       projName: CliArgumentParser
-      MajorVersion: ${{ parameters.MajorVersion }}
-      MinorVersion: ${{ parameters.MinorVersion }}
-      buildNumber: $(Build.BuildId)
 
   - template: .\devops\templates\dotnet-build.yaml
     parameters:
@@ -83,13 +95,3 @@ steps:
       PathtoPublish: "$(Build.ArtifactStagingDirectory)"
       ArtifactName: "drop"
       publishLocation: "Container"
-
-  - task: DotNetCoreCLI@2
-    displayName: Push
-    inputs:
-      command: "push"
-      packagesToPush: "$(Build.ArtifactStagingDirectory)/*.nupkg"
-      nuGetFeedType: "external"
-      publishFeedCredentials: "Nuget.org"
-      allowPackageConflicts: true
-    condition: eq(${{ parameters.PublishPackage }}, true)

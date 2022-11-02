@@ -1,40 +1,16 @@
-trigger:
-  branches:
-    include:
-      - master
-    exclude:
-      - develop
-      - release-candidate
-
-  paths:
-    include:
-      - src
-    exclude:
-      - script/*
-      - libs/*
-      - devops/*
-
-name: CLIArgumentParser-CI
-
 pool:
-  vmImage: "ubuntu-latest"
+  vmImage: "windows-latest"
+
+#name: Umbrella.Core-Publish
 
 parameters:
   - name: MajorVersion
     displayName: "Major Version"
     default: 1
+
   - name: MinorVersion
     displayName: "Minor Version"
-    default: 1
-  - name: authors
-    displayName: "Names of authors of the target package"
-    default: "FG"
-  - name: company
-    displayName: "Company that produces the target package"
-    default: "Innova Solutions"
-  - name: copyright
-    displayName: "Copyright"
-    default: "FG 2022"
+    default: 2
 
   - name: PublishPackage
     displayName: "Publish Package to Nuget.Org"
@@ -46,8 +22,6 @@ variables:
   targetFramework: "6.x"
   nugetVersion: ${{ parameters.MajorVersion }}.${{ parameters.MinorVersion }}.$(Build.BuildId)
 
-steps:
- 
 steps:
   ##### use the right version of .Net core
   - task: UseDotNet@2
