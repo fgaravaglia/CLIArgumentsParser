@@ -47,8 +47,7 @@ parameters:
     default: False
   - name: NugetApiKey
     displayName: "APIKEY to Publish Package on Nuget.Org"
-    default: ""
-    required: False
+    default: "set here your Nuget Api Key"
 
 variables:
   buildConfiguration: "Release"
