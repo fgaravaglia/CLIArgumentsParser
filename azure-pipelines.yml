@@ -94,7 +94,7 @@ steps:
       publishLocation: "Container"
 
   - task: DotNetCoreCLI@2
-    displayName: Push
+    displayName: Push to Nuget.org
     inputs:
       command: "push"
       packagesToPush: "$(Build.ArtifactStagingDirectory)/*.nupkg"
