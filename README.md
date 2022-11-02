@@ -8,7 +8,7 @@ Library to easily manage and parse CLI arguments
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=fgaravaglia_CLIArgumentsParser&metric=bugs)](https://sonarcloud.io/summary/new_code?id=fgaravaglia_CLIArgumentsParser)
 [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=fgaravaglia_CLIArgumentsParser&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=fgaravaglia_CLIArgumentsParser)
 
-Current Version: <b>Stable - 1.1.1944</b>: branch MASTER
+Current Version: Stable - 1.2.1944 - branch MASTER
 
 To install it, use proper command:
 ```
@@ -41,12 +41,12 @@ Remember to:
 ## Option Definition
 All properties you add should map an option of the verb, such:
 ```c#
-        [Option(OPT_FOLDER, "Root folder to scan", isMandatory: true)]
-        public string Folder
-        {
+    [Option(OPT_FOLDER, "Root folder to scan", isMandatory: true)]
+    public string Folder
+    {
             get { return this.GetArgumentValue<ScanCommand, string>(x => x.Folder); }
             set { this.AddOrUpdateArgument<ScanCommand, string>(x => x.Folder, value); }
-        }
+    }
 ```
 
 Then, remember to parse the string argument:
