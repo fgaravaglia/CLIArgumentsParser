@@ -31,7 +31,7 @@ namespace CliArgumentParser.Decorator
                 const string Format = "Expression '{0}' not supported.";
                 string message = string.Format(Format, Field);
 
-                throw new ArgumentException(message, "Field");
+                throw new ArgumentException(message, nameof(Field));
             }
 
             return expr.Member.Name;

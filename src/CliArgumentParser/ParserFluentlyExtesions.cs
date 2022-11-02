@@ -25,9 +25,11 @@ namespace CliArgumentParser
         /// <param name="parser"></param>
         /// <param name="errorCallback"></param>
         /// <returns></returns>
-        public static CliArgumentParser OnError(this CliArgumentParser parser, Action<Exception> errorCallback)
+        public static CliArgumentParser OnError<T>(this CliArgumentParser parser, Func<T, int> errorCallback) where T : Exception
         {
-            parser.OnError(errorCallback);
+            if(errorCallback ==null)
+                throw new ArgumentNullException(nameof( errorCallback));
+            parser.SetErrorCallback(errorCallback);
             return parser;
         }
         /// <summary>

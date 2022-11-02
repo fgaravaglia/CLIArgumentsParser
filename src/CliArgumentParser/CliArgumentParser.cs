@@ -35,6 +35,7 @@ namespace CliArgumentParser
         const int INTERNAL_ERROR = 2;
 
         readonly ICommandFactory _CmdFactory;
+        readonly ICLICommandValidator _Validator;
         readonly Dictionary<Type, Func<Exception, int>> _ErrorCallbackRegistry;
 
         CliCommand? _ParsedCommand;
@@ -48,14 +49,18 @@ namespace CliArgumentParser
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="factory"></param>
-        public CliArgumentParser(ICommandFactory factory)
+        public CliArgumentParser(ICommandFactory factory, ICLICommandValidator validator)
         {
             this._CmdFactory = factory ?? throw new ArgumentNullException(nameof(factory));
+            this._Validator = validator ?? throw new ArgumentNullException(nameof(validator));
             this._ErrorCallbackRegistry = new Dictionary<Type, Func<Exception, int>>();
             this._ParsedCommand = null;
             this._OccurredError = null;
             this._ReturnValue = 0;
+        }
+
+        public CliArgumentParser(ICommandFactory factory) : this(factory, new CliCommandValidator())
+        {
         }
 
         #region Private methods
@@ -222,8 +227,7 @@ namespace CliArgumentParser
                 }
 
                 // Validate the parsed command
-                var validator = new CliCommandValidator();
-                validator.AssertIsValid(cmd);
+                this._Validator.AssertIsValid(cmd);
 
                 this._ParsedCommand = cmd;
             }
@@ -248,7 +252,7 @@ namespace CliArgumentParser
                 if (callback is null)
                     throw new ArgumentNullException((nameof(callback)));
                 if (this._ParsedCommand is null)
-                    throw new ApplicationException($"Parsed Failed: no known command found");
+                    throw new CliArgumentParserException($"Parsed Failed: no known command found");
 
                 if (this._ParsedCommand.GetType() != typeof(Tcmd))
                     return;
