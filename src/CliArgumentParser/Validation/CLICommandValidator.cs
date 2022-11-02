@@ -8,7 +8,7 @@ using System.Text;
 
 namespace CliArgumentParser.Validation
 {
-    public interface ICLICommandValidator
+    public interface ICliCommandValidator
     {
         /// <summary>
         /// Esure the command is Valid; otherwhise it thorws exception
@@ -17,7 +17,7 @@ namespace CliArgumentParser.Validation
         void AssertIsValid(CliCommand cmd);
     }
 
-    public class CliCommandValidator : ICLICommandValidator
+    public class CliCommandValidator : ICliCommandValidator
     {
         public CliCommandValidator()
         { 

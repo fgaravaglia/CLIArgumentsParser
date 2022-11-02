@@ -35,7 +35,7 @@ namespace CliArgumentParser
         const int INTERNAL_ERROR = 2;
 
         readonly ICommandFactory _CmdFactory;
-        readonly ICLICommandValidator _Validator;
+        readonly ICliCommandValidator _Validator;
         readonly Dictionary<Type, Func<Exception, int>> _ErrorCallbackRegistry;
 
         CliCommand? _ParsedCommand;
@@ -49,7 +49,7 @@ namespace CliArgumentParser
         /// <summary>
         /// 
         /// </summary>
-        public CliArgumentParser(ICommandFactory factory, ICLICommandValidator validator)
+        public CliArgumentParser(ICommandFactory factory, ICliCommandValidator validator)
         {
             this._CmdFactory = factory ?? throw new ArgumentNullException(nameof(factory));
             this._Validator = validator ?? throw new ArgumentNullException(nameof(validator));
