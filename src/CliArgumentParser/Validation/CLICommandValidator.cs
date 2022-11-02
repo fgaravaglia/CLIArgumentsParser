@@ -29,7 +29,7 @@ namespace CliArgumentParser.Validation
             {
                 // get value
                 object? propValue = prop.GetValue(cmd);
-                string propValueString = "";
+                string? propValueString = "";
                 if(propValue != null)
                     propValueString = propValue.ToString();
                 string optionName = prop.Name;
@@ -47,7 +47,7 @@ namespace CliArgumentParser.Validation
                         throw new WrongOptionUsageException(cmd.Verb, attribute.Name, "Option is Mandatory");
 
 
-                    if(attribute.ValidValues.Any() && !attribute.ValidValues.Contains(propValueString))
+                    if(attribute.ValidValues.Any() && !String.IsNullOrEmpty(propValueString) && !attribute.ValidValues.Contains(propValueString))
                         throw new WrongOptionUsageException(cmd.Verb, attribute.Name, $"Value {propValue} is not valid for List of values");
                 }
 
