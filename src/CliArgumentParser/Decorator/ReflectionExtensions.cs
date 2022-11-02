@@ -12,15 +12,17 @@ namespace CliArgumentParser.Decorator
         {
             if (object.Equals(Field, null))
             {
-                throw new NullReferenceException("Field is required");
+                throw new ArgumentNullException(nameof(Field));
             }
 
             MemberExpression expr;
-            if (Field.Body is MemberExpression)
+            MemberExpression? memberExpr = Field.Body as MemberExpression;
+            UnaryExpression? unaryExpr = Field.Body as UnaryExpression;
+            if (memberExpr != null)
             {
                 expr = (MemberExpression)Field.Body;
             }
-            else if (Field.Body is UnaryExpression)
+            else if (unaryExpr != null)
             {
                 expr = (MemberExpression)((UnaryExpression)Field.Body).Operand;
             }

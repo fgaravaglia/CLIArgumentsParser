@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -62,9 +63,10 @@ namespace CliArgumentParser
             if (!this._Registry.ContainsKey(verb))
                 throw new UnknownVerbException(verb);
 
-            var instance = Activator.CreateInstance(this._Registry[verb]);
+            var targetType = this._Registry[verb];
+            var instance = Activator.CreateInstance(targetType);
             if(instance is null)
-                throw new ApplicationException("unable to activate " + verb);
+                throw new ReflectionTypeLoadException(new Type[]{ targetType}, null);
             ((CliCommand)instance).SetDefaultValues();
             return (CliCommand)instance;
         }

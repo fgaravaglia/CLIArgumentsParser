@@ -85,7 +85,7 @@ steps:
       extraProperties: |
         # Additional properties that will be passed to the scanner, 
         # Put one key=value per line, example:
-        sonar.exclusions=**/obj/**,**/*.dll, src/CliArgumentParser.Tests/**/*.*
+        sonar.exclusions=**/obj/**,**/*.dll,**/CliArgumentParser.Tests/**,**/CLIArgumentsParser.Tests/**/*.cs
         sonar.cs.opencover.reportsPaths=$(Build.SourcesDirectory)/**/coverage.opencover.xml
         sonar.cs.vstest.reportsPaths=$(Agent.TempDirectory)/*.trx
 

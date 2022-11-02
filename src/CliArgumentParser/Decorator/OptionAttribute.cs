@@ -18,7 +18,7 @@ namespace CliArgumentParser.Decorator
 
         public List<string> ValidValues { get; private set; }
 
-        public OptionAttribute(string name, string descr, bool isMandatory) : this(name, descr, isMandatory, new string[] { })
+        public OptionAttribute(string name, string descr, bool isMandatory) : this(name, descr, isMandatory, Array.Empty<string>())
         {
             this.Name = name;
             this.Description = descr;

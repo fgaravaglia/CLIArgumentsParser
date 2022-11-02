@@ -93,7 +93,7 @@ namespace CliArgumentParser
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentNullException(nameof(name));
             if (string.IsNullOrEmpty(description))
-                throw new ArgumentNullException("Description is mandatory for Argument " + name, nameof(description));
+                throw new ArgumentNullException(nameof(description), "Description is mandatory");
 
             var existing = this.Arguments.SingleOrDefault(x => x.Name == name);
             if (existing is null)
@@ -119,7 +119,7 @@ namespace CliArgumentParser
 
             var existing = this.Arguments.SingleOrDefault(x => x.Name == name);
             if (existing is null)
-                throw new ApplicationException($"Argument {name} not found!");
+                throw new ArgumentException(name, $"Argument not found!");
             else
             {
                 existing.UpdateValue(value);

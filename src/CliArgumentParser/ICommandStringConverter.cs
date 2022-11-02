@@ -42,7 +42,7 @@ namespace CliArgumentParser
         public string DefinitionToString()
         {
             StringBuilder message = new StringBuilder();
-            message.Append(_Cmd.Verb).Append("\t").Append(this._Cmd.Description).AppendLine();
+            message.Append(_Cmd.Verb).Append('\t').Append(this._Cmd.Description).AppendLine();
             message.AppendLine(this.OptionsToString());
             return message.ToString();
         }
@@ -75,7 +75,7 @@ namespace CliArgumentParser
             foreach (var arg in this._Cmd.Arguments)
             {
                 message.Append(arg.Name).Append("=" + arg.Value);
-                message.Append(" ");
+                message.Append(' ');
             }
             return message.ToString();
         }

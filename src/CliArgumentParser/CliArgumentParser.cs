@@ -85,7 +85,7 @@ namespace CliArgumentParser
             return false;
         }
 
-        private void PrintException(string caption, Exception ex, bool showStackTrace)
+        private static void PrintException(string caption, Exception ex, bool showStackTrace)
         {
             Console.WriteLine($"*********************| {caption} |*********************");
             Console.WriteLine(ex.Message);
