@@ -43,7 +43,7 @@ parameters:
 
   - name: PublishPackage
     displayName: "Publish Package to Nuget.Org"
-    type: booelan
+    type: boolean
     default: False
 
 variables:
