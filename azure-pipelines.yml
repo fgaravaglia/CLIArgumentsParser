@@ -30,7 +30,7 @@ parameters:
     default: 1
   - name: MinorVersion
     displayName: "Minor Version"
-    default: 1
+    default: 2
   - name: authors
     displayName: "Names of authors of the target package"
     default: "FG"
