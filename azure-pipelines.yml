@@ -45,12 +45,14 @@ parameters:
     displayName: "Publish Package to Nuget.Org"
     type: boolean
     default: False
+  - name: NugetApiKey
+    displayName: "APIKEY to Publish Package on Nuget.Org"
+    default: ""
 
 variables:
   buildConfiguration: "Release"
   targetFramework: "6.x"
   nugetVersion: ${{ parameters.MajorVersion }}.${{ parameters.MinorVersion }}.$(Build.BuildId)
-  NuGetApiKey: oy2ksj3v5irgsigozoiqvun23gqusxwuvo5xva27egfpqq
 
 steps:
   ##### use the right version of .Net core
@@ -68,8 +70,6 @@ steps:
   - script: |
       echo "Build ID      => $(Build.BuildId)"
       echo "Build Number  => $(Build.BuildNumber)"
-      echo "Nuget ApiKey  => $(NuGetApiKey)"
-      echo "              => $(NugetCredentials.apiKey)"
       dotnet tool install --global dotnet-reportgenerator-globaltool
     displayName: "Install ReportGenerator tool"
 
@@ -133,5 +133,5 @@ steps:
       arguments: >
         push $(Build.ArtifactStagingDirectory)/*.nupkg
         -s https://api.nuget.org/v3/index.json
-        -k $(NuGetApiKey)
+        -k ${{ parameters.NugetApiKey }}
     condition: eq(${{ parameters.PublishPackage }}, true)

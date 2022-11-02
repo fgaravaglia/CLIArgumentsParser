@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using CliArgumentParser;
 using CliArgumentParser.Tests.TestCommands;
+using CliArgumentParser.Validation;
 using NUnit.Framework;
 
 namespace CliArgumentParser.Tests
@@ -19,6 +20,41 @@ namespace CliArgumentParser.Tests
             factory.RegisterCommand<ScanCommand>("scan");
             factory.RegisterCommand<PrintCommand>("print");
             this._Parser = factory.InstanceFromFactory().UsingDefaultErrorManagement();
+        }
+
+        [Test]
+        public void Constructor_ThrowsEx_ifFactoryIsNull()
+        {
+            //******* GIVEN
+            var myargs = Array.Empty<string>();
+
+            //******* WHEN
+            TryToRun(() => new CliArgumentParser(null, null));
+
+
+            //******* ASSERT
+            AssertThatExceptionOfTypeOccurred<ArgumentNullException>();
+            AssertExceptionHasStringPropertyEqualsTo<ArgumentNullException>(x => x.ParamName, "factory");
+            Assert.Pass();
+        }
+
+        [Test]
+        public void Constructor_ThrowsEx_ifValidatorIsNull()
+        {
+            //******* GIVEN
+            ICliCommandValidator validator = null;
+            var factory = new CommandFactory();
+            factory.RegisterCommand<ScanCommand>("scan");
+            factory.RegisterCommand<PrintCommand>("print");
+
+            //******* WHEN
+            TryToRun(() => new CliArgumentParser(factory, validator));
+
+
+            //******* ASSERT
+            AssertThatExceptionOfTypeOccurred<ArgumentNullException>();
+            AssertExceptionHasStringPropertyEqualsTo<ArgumentNullException>(x => x.ParamName, "validator");
+            Assert.Pass();
         }
 
         [Test]
