@@ -13,14 +13,14 @@ trigger:
 #       - script/*
 #       - libs/*
 #       - devops/*
-# 
+#
 schedules:
   - cron: "0 12 * * 0"
     displayName: Weekly Sunday build
     branches:
       include:
-      - master
-    
+        - master
+
 pool:
   vmImage: "ubuntu-latest"
 
@@ -51,8 +51,6 @@ variables:
   targetFramework: "6.x"
   nugetVersion: ${{ parameters.MajorVersion }}.${{ parameters.MinorVersion }}.$(Build.BuildId)
 
-steps:
- 
 steps:
   ##### use the right version of .Net core
   - task: UseDotNet@2

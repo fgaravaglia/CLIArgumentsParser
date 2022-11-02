@@ -7,11 +7,15 @@
   </PropertyGroup>
 
   <PropertyGroup>
+    <PackageId>CliArgumentParser</PackageId>
     <Company>Innova Solutions</Company>
     <Authors>FG</Authors>
     <Description>Library to parse command line arguments</Description>
     <Copyright>FG 2022</Copyright>
+    <Version>1.1.0.0</Version>
     <VersionNumber>1.1.0.0</VersionNumber>
+    <PackageProjectUrl>https://github.com/fgaravaglia/CLIArgumentsParser</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/fgaravaglia/CLIArgumentsParser</RepositoryUrl>
   </PropertyGroup>
 
 </Project>
