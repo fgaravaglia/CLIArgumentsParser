@@ -53,6 +53,7 @@ variables:
   buildConfiguration: "Release"
   targetFramework: "6.x"
   nugetVersion: ${{ parameters.MajorVersion }}.${{ parameters.MinorVersion }}.$(Build.BuildId)
+  testReportFileName: coverage.cobertura.xml
 
 steps:
   ##### use the right version of .Net core
@@ -86,7 +87,7 @@ steps:
         # Additional properties that will be passed to the scanner, 
         # Put one key=value per line, example:
         sonar.exclusions=**/obj/**,**/*.dll,**/CliArgumentParser.Tests/**,**/CLIArgumentsParser.Tests/**/*.cs
-        sonar.cs.opencover.reportsPaths=$(Build.SourcesDirectory)/**/coverage.opencover.xml
+        sonar.cs.opencover.reportsPaths=$(Build.SourcesDirectory)/**/$(testReportFileName)
         sonar.cs.vstest.reportsPaths=$(Agent.TempDirectory)/*.trx
 
   - template: .\devops\templates\dotnet-package-pack.yaml
@@ -108,6 +109,7 @@ steps:
     parameters:
       projPath: src/CliArgumentParser.Tests
       projName: CliArgumentParser.Tests
+      testReportFileName: $(testReportFileName)
 
   - task: SonarCloudAnalyze@1
     displayName: "Run Sonar Cloud Analysis"
@@ -131,7 +133,7 @@ steps:
       command: "custom"
       custom: nuget
       arguments: >
-        push $(Build.ArtifactStagingDirectory)/*.nupkg
+        push $(Build.ArtifactStagingDirectory)/CliArgumentParser.nupkg
         -s https://api.nuget.org/v3/index.json
         -k ${{ parameters.NugetApiKey }}
     condition: eq(${{ parameters.PublishPackage }}, true)

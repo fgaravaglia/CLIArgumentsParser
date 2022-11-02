@@ -47,6 +47,11 @@ namespace CliArgumentParser
         /// </summary>
         public bool HasError { get { return this._OccurredError != null; } }
         /// <summary>
+        /// Eventually, the occurred error
+        /// </summary>
+        /// <value></value>
+        public Exception? OccurredError { get{ return this._OccurredError;}}
+        /// <summary>
         /// 
         /// </summary>
         public CliArgumentParser(ICommandFactory factory, ICliCommandValidator validator)

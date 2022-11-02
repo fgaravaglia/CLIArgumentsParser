@@ -20,8 +20,24 @@ namespace CliArgumentParser.Validation
     public class CliCommandValidator : ICliCommandValidator
     {
         public CliCommandValidator()
-        { 
-        
+        {
+
+        }
+
+        static String GetPropertyValueAsString(CliCommand cmd, PropertyInfo prop)
+        {
+            if(cmd == null)
+                throw new ArgumentNullException(nameof(cmd));
+            if (prop == null)
+                throw new ArgumentNullException(nameof(prop));  
+
+            // get value
+            object? propValue = prop.GetValue(cmd);
+            string? propValueString = "";
+            if (propValue != null)
+                propValueString = propValue.ToString();
+            
+            return propValueString == null ? "" : propValueString;
         }
 
         public void AssertIsValid(CliCommand cmd)
@@ -37,10 +53,7 @@ namespace CliArgumentParser.Validation
             foreach (var prop in optionProperties)
             {
                 // get value
-                object? propValue = prop.GetValue(cmd);
-                string? propValueString = "";
-                if(propValue != null)
-                    propValueString = propValue.ToString();
+                string propValueString = GetPropertyValueAsString(cmd, prop);
 
                 // get decorators
                 var attributes = prop.ExtractDecoratorsFromProperty();
@@ -49,18 +62,18 @@ namespace CliArgumentParser.Validation
                 {
                     if (a.GetType() != typeof(OptionAttribute))
                         throw new WrongOptionUsageException(cmd.Verb, a.GetType());
+                        
                     OptionAttribute attribute = a;
-                    if (attribute.IsMandatory && propValue is null)
+                    if (attribute.IsMandatory && String.IsNullOrEmpty(propValueString))
                         throw new WrongOptionUsageException(cmd.Verb, attribute.Name, "Option is Mandatory");
 
-
-                    if(attribute.ValidValues.Any() && !String.IsNullOrEmpty(propValueString) && !attribute.ValidValues.Contains(propValueString))
-                        throw new WrongOptionUsageException(cmd.Verb, attribute.Name, $"Value {propValue} is not valid for List of values");
+                    if (attribute.ValidValues.Any() && !String.IsNullOrEmpty(propValueString) && !attribute.ValidValues.Contains(propValueString))
+                        throw new WrongOptionUsageException(cmd.Verb, attribute.Name, $"Value {propValueString} is not valid for List of values");
                 }
 
             }
         }
 
-            
-            }
+
+    }
 }

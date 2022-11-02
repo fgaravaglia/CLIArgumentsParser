@@ -58,6 +58,37 @@ namespace CliArgumentParser.Tests
         }
 
         [Test]
+        public void SetErrorCallback_ThrowException_IfCallbackIsNull()
+        {
+            //******* GIVEN
+            Func<Exception, int> callback = null;
+
+            //******* WHEN
+            TryToRun(() => this._Parser.SetErrorCallback(callback));
+
+
+            //******* ASSERT
+            AssertThatExceptionOfTypeOccurred<ArgumentNullException>();
+            AssertExceptionHasStringPropertyEqualsTo<ArgumentNullException>(x => x.ParamName, "callback");
+            Assert.Pass();
+        }
+
+        [Test]
+        public void SetErrorCallback_ThrowException_IfCallbackFOrExceptionTypeExists()
+        {
+            //******* GIVEN
+            Func<Exception, int> callback = x => 1;
+
+            //******* WHEN
+            TryToRun(() => this._Parser.SetErrorCallback(callback));
+
+            //******* ASSERT
+            AssertThatExceptionOfTypeOccurred<ArgumentException>();
+            AssertExceptionHasStringPropertyEqualsTo<ArgumentException>(x => x.ParamName, "callback");
+            Assert.Pass();
+        }
+
+        [Test]
         public void ParseArguments_WithNoArgs_HasErrorsButNoExceptionIsthrown()
         {
             //******* GIVEN
@@ -139,6 +170,31 @@ namespace CliArgumentParser.Tests
 
             //******* ASSERT
             Assert.That(this._Parser.HasError, Is.EqualTo(false));
+            Assert.Pass();
+        }
+
+        [Test]
+        public void RunCallback_ThrowsException_IfCallbackIsNull()
+        {
+            //******* GIVEN
+            var myargs = new string[]
+            {
+                "scan",
+                @"-folder=c:\temp\test\uc.q8f.ua.blotter",
+                "-match-file=.csproj",
+               @"-match-exp=\nugetpackages\",
+               "-to=csv"
+            };
+            this._Parser.ParseArguments(myargs);
+            Action<ScanCommand> callback = null;
+
+            //******* WHEN
+            TryToRun(() => this._Parser.RunCallbackFor<ScanCommand>(callback));
+
+            //******* ASSERT
+            Assert.That(this._Parser.HasError, Is.EqualTo(true));
+            Assert.That(this._Parser.OccurredError.GetType(), Is.EqualTo(typeof(ArgumentNullException)));
+            Assert.That(((ArgumentNullException)this._Parser.OccurredError).ParamName, Is.EqualTo("callback"));
             Assert.Pass();
         }
 
