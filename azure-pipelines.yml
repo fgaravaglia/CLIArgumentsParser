@@ -106,7 +106,7 @@ steps:
       projName: CliArgumentParser.Tests
 
   - script: |
-      coverlet .\src\CliArgumentParser.Tests\bin\$(buildConfiguration)\net6.0\CliArgumentParser.Tests.dll --target "dotnet" --targetargs "test --no-build" -f=opencover -o=coverage.xml
+      coverlet .\src\CliArgumentParser.Tests\CliArgumentParser.Tests.csproj --target "dotnet" --targetargs "test --no-build" -f=opencover -o=coverage.xml
     displayName: "Run Test with Coverlet"
 
   - task: SonarCloudAnalyze@1
