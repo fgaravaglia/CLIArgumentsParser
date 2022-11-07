@@ -49,7 +49,7 @@ parameters:
     default: "set here your Nuget Api Key"
 
 variables:
-  buildConfiguration: "Release"
+  buildConfiguration: Release
   targetFramework: "6.x"
   nugetVersion: ${{ parameters.MajorVersion }}.${{ parameters.MinorVersion }}.$(Build.BuildId)
   testReportFileName: cobertura.xml
@@ -67,11 +67,7 @@ steps:
     inputs:
       checkLatest: true
 
-  - script: |
-      echo "Build ID      => $(Build.BuildId)"
-      echo "Build Number  => $(Build.BuildNumber)"
-      dotnet tool install --global dotnet-reportgenerator-globaltool
-    displayName: "Install ReportGenerator tool"
+  - template: .\devops\templates\dotnet-tool-install-coverlet.yaml
 
   - task: SonarCloudPrepare@1
     displayName: "Prepare analysis on SonarCloud"
@@ -87,7 +83,7 @@ steps:
         # Put one key=value per line, example:
         sonar.exclusions=**/obj/**,**/*.dll,**/CliArgumentParser.Tests/**,**/CLIArgumentsParser.Tests/**/*.cs
         sonar.cs.vstest.reportsPaths=$(Agent.TempDirectory)/*.trx
-        sonar.cs.opencover.reportsPaths=$(Build.SourcesDirectory)/**/$(testReportFileName)
+        sonar.cs.opencover.reportsPaths=coverage.xml,**/coverage.xml
 
   - template: .\devops\templates\dotnet-package-pack.yaml
     parameters:
@@ -108,6 +104,10 @@ steps:
     parameters:
       projPath: src/CliArgumentParser.Tests
       projName: CliArgumentParser.Tests
+
+  - script: |
+      coverlet .\src\CliArgumentParser.Tests\bin\$(buildConfiguration)\net6.0\CliArgumentParser.Tests.dll --target "dotnet" --targetargs "test --no-build" -f=opencover -o=coverage.xml
+    displayName: "Run Test with Coverlet"
 
   - task: SonarCloudAnalyze@1
     displayName: "Run Sonar Cloud Analysis"
