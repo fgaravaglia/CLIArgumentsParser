@@ -83,7 +83,7 @@ steps:
         # Put one key=value per line, example:
         sonar.exclusions=**/obj/**,**/*.dll,**/CliArgumentParser.Tests/**,**/CLIArgumentsParser.Tests/**/*.cs
         sonar.cs.vstest.reportsPaths=$(Agent.TempDirectory)/*.trx
-        sonar.cs.opencover.reportsPaths=coverage.xml,**/coverage.xml
+        sonar.cs.opencover.reportsPaths=coverage.xml,**/coverage.xml,/coverlet/reports/Cobertura.xml, **/Cobertura.xml
 
   - template: .\devops\templates\dotnet-package-pack.yaml
     parameters:
@@ -106,7 +106,7 @@ steps:
       projName: CliArgumentParser.Tests
 
   - script: |
-      coverlet /src/CliArgumentParser.Tests/bin/Release/net6.0/CliArgumentParser.Tests.dll --target "dotnet" --targetargs "test /src/CliArgumentParser.Tests --no-build"/src/CliArgumentParser.Tests -f=opencover -o=coverage.xml
+      coverlet \src\CliArgumentParser.Tests\bin\Release\net6.0\CliArgumentParser.Tests.dll --target "dotnet" --targetargs "test /src/CliArgumentParser.Tests --no-build"/src/CliArgumentParser.Tests -f=opencover -o=coverage.xml
     displayName: "Run Test with Coverlet"
 
   - task: SonarCloudAnalyze@1
