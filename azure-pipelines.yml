@@ -79,11 +79,10 @@ steps:
       projectName: "CLIArgumentsParser"
       projectVersion: "${{ parameters.MajorVersion }}.${{ parameters.MinorVersion }}"
       extraProperties: |
-        # Additional properties that will be passed to the scanner, 
-        # Put one key=value per line, example:
+        # Additional properties that will be passed to the scanner, Put one key=value per line, example:
         sonar.exclusions=**/obj/**,**/*.dll,**/CliArgumentParser.Tests/**,**/CLIArgumentsParser.Tests/**/*.cs
         sonar.cs.vstest.reportsPaths=$(Agent.TempDirectory)/*.trx
-        sonar.cs.opencover.reportsPaths=coverage.xml,**/coverage.xml,/coverlet/reports/Cobertura.xml, **/Cobertura.xml
+        sonar.cs.opencover.reportsPaths=src/CliArgumentParser.Tests/TestResults/**/coverage.cobertura.xml
 
   - template: .\devops\templates\dotnet-package-pack.yaml
     parameters:
@@ -106,7 +105,7 @@ steps:
       projName: CliArgumentParser.Tests
 
   - script: |
-      coverlet \src\CliArgumentParser.Tests\bin\Release\net6.0\CliArgumentParser.Tests.dll --target "dotnet" --targetargs "test /src/CliArgumentParser.Tests --no-build" -f=opencover -o=coverage.xml
+      coverlet \src\CliArgumentParser.Tests\bin\Release\net6.0\CliArgumentParser.Tests.dll --target "dotnet" --targetargs "test \src\CliArgumentParser.Tests --no-build" -f=opencover -o=coverage.xml
     displayName: "Run Test with Coverlet"
 
   - task: SonarCloudAnalyze@1
