@@ -104,9 +104,9 @@ steps:
       projPath: src/CliArgumentParser.Tests
       projName: CliArgumentParser.Tests
 
-  - script: |
-      coverlet \src\CliArgumentParser.Tests\bin\Release\net6.0\CliArgumentParser.Tests.dll --target "dotnet" --targetargs "test \src\CliArgumentParser.Tests --no-build" -f=opencover -o=coverage.xml
-    displayName: "Run Test with Coverlet"
+  # - script: |
+  #     coverlet \src\CliArgumentParser.Tests\bin\Release\net6.0\CliArgumentParser.Tests.dll --target "dotnet" --targetargs "test \src\CliArgumentParser.Tests --no-build" -f=opencover -o=coverage.xml
+  #   displayName: "Run Test with Coverlet"
 
   - task: SonarCloudAnalyze@1
     displayName: "Run Sonar Cloud Analysis"
