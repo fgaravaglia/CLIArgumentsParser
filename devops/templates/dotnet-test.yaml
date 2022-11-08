@@ -14,7 +14,7 @@ steps:
     inputs:
       command: test
       projects: "${{ parameters.projPath }}/${{ parameters.projName }}.csproj"
-      arguments: '--logger trx --configuration Debug --collect "XPlat Code coverage" -- RunConfiguration.DisableAppDomain=true'  /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=$(Common.TestResultsDirectory)\opencover.xml'
+      arguments: '--logger trx --configuration Debug --collect "XPlat Code coverage" -- RunConfiguration.DisableAppDomain=true /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=$(Common.TestResultsDirectory)\opencover.xml'
       testRunTitle: ${{ parameters.projName }}
 
   - script: 'reportgenerator -reports:$(Agent.TempDirectory)/**/${{ parameters.testReportFileName }} -targetdir:$(Build.SourcesDirectory)/coverlet/reports -reporttypes:"Cobertura"'
