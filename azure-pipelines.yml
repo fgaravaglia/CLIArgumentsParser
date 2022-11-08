@@ -82,7 +82,7 @@ steps:
         # Additional properties that will be passed to the scanner, Put one key=value per line, example:
         sonar.exclusions=**/obj/**,**/*.dll,**/CliArgumentParser.Tests/**,**/CLIArgumentsParser.Tests/**/*.cs
         sonar.verbose=true
-        sonar.cs.opencover.reportsPaths=coverage.xml,./TestResults/coverage.cobertura.xml,**/coverage.cobertura.xml,**/reports/coverlet/Cobertura.xml
+        sonar.cs.opencover.reportsPaths=coverage.xml
 
   - template: .\devops\templates\dotnet-package-pack.yaml
     parameters:
@@ -92,21 +92,28 @@ steps:
       MinorVersion: ${{ parameters.MinorVersion }}
       buildNumber: $(Build.BuildId)
 
-  - template: .\devops\templates\dotnet-build.yaml
-    parameters:
-      projPath: src/CliArgumentParser.Tests
-      projName: CliArgumentParser.Tests
-      publishRequired: false
+  # - template: .\devops\templates\dotnet-build.yaml
+  #   parameters:
+  #     projPath: src/CliArgumentParser.Tests
+  #     projName: CliArgumentParser.Tests
+  #     publishRequired: false
 
   ############################## TEST #################################
-  - template: .\devops\templates\dotnet-test.yaml
-    parameters:
-      projPath: src/CliArgumentParser.Tests
-      projName: CliArgumentParser.Tests
+  # - template: .\devops\templates\dotnet-test.yaml
+  #   parameters:
+  #     projPath: src/CliArgumentParser.Tests
+  #     projName: CliArgumentParser.Tests
+
+  - task: DotNetCoreCLI@2
+    displayName: ${{ parameters.projName }} - Build
+    inputs:
+      command: "build"
+      arguments: "--configuration Release -v=q"
+      projects: "${{ parameters.projPath }}/*.csproj"
 
   # see https://docs.sonarcloud.io/enriching/test-coverage/dotnet-test-coverage/
   - script: |
-      coverlet ./src/CliArgumentParser.Tests/bin/Release/net6.0/CliArgumentParser.Tests.dll --target "dotnet" --targetargs "test --no-build" -f=opencover -o="coverage.xml"
+      coverlet .\src\CliArgumentParser.Tests\bin\Release\net6.0\CliArgumentParser.Tests.dll --target "dotnet" --targetargs "test .\src\CliArgumentParser.Tests\CliArgumentParser.Tests.csproj --no-build" -f=opencover -o="coverage.xml"
     displayName: "Run Test Coverage"
 
   # - task: CopyFiles@2
