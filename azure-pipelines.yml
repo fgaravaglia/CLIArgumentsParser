@@ -105,7 +105,7 @@ steps:
   #     projName: CliArgumentParser.Tests
 
   - task: DotNetCoreCLI@2
-    displayName: ${{ parameters.projName }} - Build
+    displayName: CliArgumentParser.Tests - Build
     inputs:
       command: "build"
       arguments: "--configuration Release -v=q"
