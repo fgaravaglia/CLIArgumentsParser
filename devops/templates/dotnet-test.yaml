@@ -15,26 +15,26 @@ parameters:
     default: coverage.cobertura.xml
 
 steps:
-  - task: DotNetCoreCLI@2
-    displayName: "dotnet test - ${{ parameters.projName }}"
-    inputs:
-      command: test
-      projects: "${{ parameters.projPath }}/${{ parameters.projName }}.csproj"
-      arguments: '--logger trx --configuration Debug /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=$(Build.SourcesDirectory)/TestResults/opencover.xml'
-      testRunTitle: ${{ parameters.projName }}
-  
-  - script: 'reportgenerator -reports:$(Build.SourcesDirectory)/TestResults/opencover.xml -targetdir:$(Build.SourcesDirectory)/reports -reporttypes:"HTML"'
-    displayName: "Create HTML report"
-  
-  - script: 'reportgenerator -reports:$(Build.SourcesDirectory)/TestResults/opencover.xml -targetdir:$(Build.SourcesDirectory)/reports/coverlet -reporttypes:"Cobertura"'
-    displayName: "Create Cobertura report"
-
-  - task: PublishCodeCoverageResults@1
-    displayName: "Publish code coverage HTML"
-    inputs:
-      codeCoverageTool: JaCoCo
-      summaryFileLocation: "$(Build.SourcesDirectory)/reports/*.*"
-     
+#  - task: DotNetCoreCLI@2
+#    displayName: "dotnet test - ${{ parameters.projName }}"
+#    inputs:
+#      command: test
+#      projects: "${{ parameters.projPath }}/${{ parameters.projName }}.csproj"
+#      arguments: '--logger trx --configuration Debug /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=$(Build.SourcesDirectory)/TestResults/opencover.xml'
+#      testRunTitle: ${{ parameters.projName }}
+#  
+#  - script: 'reportgenerator -reports:$(Build.SourcesDirectory)/TestResults/opencover.xml -targetdir:$(Build.SourcesDirectory)/reports -reporttypes:"HTML"'
+#    displayName: "Create HTML report"
+#  
+#  - script: 'reportgenerator -reports:$(Build.SourcesDirectory)/TestResults/opencover.xml -targetdir:$(Build.SourcesDirectory)/reports/coverlet -reporttypes:"Cobertura"'
+#    displayName: "Create Cobertura report"#
+#
+#  - task: PublishCodeCoverageResults@1
+#    displayName: "Publish code coverage HTML"
+#    inputs:
+#      codeCoverageTool: JaCoCo
+#      summaryFileLocation: "$(Build.SourcesDirectory)/reports/*.*"
+#     
   #- task: PublishCodeCoverageResults@1
   #  displayName: "Publish code coverage Cobertura"
   #  inputs:
