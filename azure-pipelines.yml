@@ -113,7 +113,7 @@ steps:
 
   # see https://docs.sonarcloud.io/enriching/test-coverage/dotnet-test-coverage/
   - script: |
-      coverlet .\src\CliArgumentParser.Tests\bin\Release\net6.0\CliArgumentParser.Tests.dll --target "dotnet" --targetargs "test .\src\CliArgumentParser.Tests\CliArgumentParser.Tests.csproj --no-build" -f=opencover -o="coverage.xml"
+      coverlet .\src\CliArgumentParser.Tests\bin\Release\net6.0\CliArgumentParser.Tests.dll --target "dotnet" --targetargs "test .\src\CliArgumentParser.Tests\CliArgumentParser.Tests.csproj --configuration Release --no-build" -f=opencover -o="coverage.xml"
     displayName: "Run Test Coverage"
 
   # - task: CopyFiles@2
