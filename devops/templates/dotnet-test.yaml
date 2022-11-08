@@ -4,56 +4,8 @@ parameters:
   - name: projName
     displayName: "name of csProj file (without extension)"
     default: ""
-  - name: coverletOutputFileName
-    displayName: "Name of file produced by test Coverage analysis made by Coverlet"
-    default: opencover.xml
-  - name: reportOutputFormat
-    displayName: "Format of the report to produce after test run [Cobertura, opencover]"
-    default: Cobertura
-  - name: testReportFileName
-    displayName: "FileName of test report generate by coverlet"
-    default: coverage.cobertura.xml
 
 steps:
-  # - task: DotNetCoreCLI@2
-  #   displayName: "dotnet test - ${{ parameters.projName }}"
-  #   inputs:
-  #     command: test
-  #     projects: "${{ parameters.projPath }}/${{ parameters.projName }}.csproj"
-  #     arguments: '--configuration Release /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=./TestResults/opencover.xml'
-  #     testRunTitle: ${{ parameters.projName }}
-
-  # - task: CopyFiles@2
-  #   displayName: "Copy opencover.xml to staging folder"
-  #   inputs:
-  #     contents: './TestResults/**'
-  #     targetFolder: $(Build.ArtifactStagingDirectory)
-  
-  # - script: |
-  #     reportgenerator -reports:./TestResults/opencover.xml -targetdir:$(Build.SourcesDirectory)/reports -reporttypes:"HTML"
-  #   displayName: "Create HTML report"
-
-  # - task: CopyFiles@2
-  #   displayName: "Copy html report to staging folder"
-  #   inputs:
-  #     contents: '$(Build.SourcesDirectory)/reports/**'
-  #     targetFolder: $(Build.ArtifactStagingDirectory)
-#  
-#  - script: 'reportgenerator -reports:$(Build.SourcesDirectory)/TestResults/opencover.xml -targetdir:$(Build.SourcesDirectory)/reports/coverlet -reporttypes:"Cobertura"'
-#    displayName: "Create Cobertura report"#
-#
-#  - task: PublishCodeCoverageResults@1
-#    displayName: "Publish code coverage HTML"
-#    inputs:
-#      codeCoverageTool: JaCoCo
-#      summaryFileLocation: "$(Build.SourcesDirectory)/reports/*.*"
-#     
-  #- task: PublishCodeCoverageResults@1
-  #  displayName: "Publish code coverage Cobertura"
-  #  inputs:
-  #    codeCoverageTool: Cobertura
-  #    summaryFileLocation: "$(Build.SourcesDirectory)/reports/coverlet/Cobertura.xml"
-
   # Plese notice that coverlet package generates a predefined file: .\TestResults\{guid}\coverage.cobertura.xml 
   # for additional info see: https://medium.com/geekculture/net-6-tests-coverge-with-coverlet-b6fe2605ee19  
   - task: DotNetCoreCLI@2
@@ -67,7 +19,7 @@ steps:
   - task: CopyFiles@2
     displayName: "Copy Test results to staging folder"
     inputs:
-      contents: '$(Build.SourcesDirectory)/${{ parameters.projPath }}/TestResults/**'
+      contents: '$(Agent.TempDirectory)/TestResults/**'
       targetFolder: $(Build.ArtifactStagingDirectory)/TestResults
 
   - script: |
@@ -79,3 +31,9 @@ steps:
     inputs:
       codeCoverageTool: Cobertura
       summaryFileLocation: "$(Build.SourcesDirectory)/reports/coverlet/Cobertura.xml"
+  
+  - task: CopyFiles@2
+    displayName: "Copy Report to staging folder"
+    inputs:
+      contents: '$(Agent.TempDirectory)/reports'
+      targetFolder: $(Build.ArtifactStagingDirectory)/reports
