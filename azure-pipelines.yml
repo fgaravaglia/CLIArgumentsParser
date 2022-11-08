@@ -82,7 +82,7 @@ steps:
         # Additional properties that will be passed to the scanner, Put one key=value per line, example:
         sonar.exclusions=**/obj/**,**/*.dll,**/CliArgumentParser.Tests/**,**/CLIArgumentsParser.Tests/**/*.cs
         sonar.verbose=true
-        sonar.cs.opencover.reportsPaths=$(Common.TestResultsDirectory)/opencover.xml
+        sonar.cs.opencover.reportsPaths=./TestResults/opencover.xml
 
   - template: .\devops\templates\dotnet-package-pack.yaml
     parameters:
@@ -103,10 +103,6 @@ steps:
     parameters:
       projPath: src/CliArgumentParser.Tests
       projName: CliArgumentParser.Tests
-
-  # - script: |
-  #     coverlet \src\CliArgumentParser.Tests\bin\Release\net6.0\CliArgumentParser.Tests.dll --target "dotnet" --targetargs "test \src\CliArgumentParser.Tests\CliArgumentParser.Tests.csproj --no-build" -f=opencover -o=coverage.xml
-  #   displayName: "Run Test with Coverlet"
 
   - task: SonarCloudAnalyze@1
     displayName: "Run Sonar Cloud Analysis"
