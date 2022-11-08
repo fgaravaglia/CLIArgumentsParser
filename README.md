@@ -1,14 +1,14 @@
 # CLIArgumentsParser
 Library to easily manage and parse CLI arguments
 
+Current Version: Stable - 1.2.1975 - branch MASTER
+
 [![Build Status](https://garaproject.visualstudio.com/CLIArgumentParser/_apis/build/status/CLIArgumentsParser-CI?branchName=master)](https://garaproject.visualstudio.com/CLIArgumentParser/_build/latest?definitionId=70&branchName=master)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=fgaravaglia_CLIArgumentsParser&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=fgaravaglia_CLIArgumentsParser)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=fgaravaglia_CLIArgumentsParser&metric=coverage)](https://sonarcloud.io/summary/new_code?id=fgaravaglia_CLIArgumentsParser)
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=fgaravaglia_CLIArgumentsParser&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=fgaravaglia_CLIArgumentsParser)
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=fgaravaglia_CLIArgumentsParser&metric=bugs)](https://sonarcloud.io/summary/new_code?id=fgaravaglia_CLIArgumentsParser)
 [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=fgaravaglia_CLIArgumentsParser&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=fgaravaglia_CLIArgumentsParser)
-
-Current Version: Stable - 1.2.1975 - branch MASTER
 
 To install it, use proper command:
 ```

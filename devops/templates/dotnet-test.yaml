@@ -4,59 +4,40 @@ parameters:
   - name: projName
     displayName: "name of csProj file (without extension)"
     default: ""
-  - name: collectType
-    displayName: "Type of metrics to collect"
-    default: Code Coverage
-  - name: reportOutputFormat
-    displayName: "Format of the report to produce after test run"
-    default: opencover
-  - name: testReportFileName
-    displayName: "FileName of test report generate by coverlet"
-    default: coverage.cobertura.xml
 
 steps:
-#  - task: DotNetCoreCLI@2
-#    displayName: "dotnet test - ${{ parameters.projName }}"
-#    inputs:
-#      command: test
-#      projects: "${{ parameters.projPath }}/${{ parameters.projName }}.csproj"
-#      arguments: '--logger trx --configuration Debug /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=$(Build.SourcesDirectory)/TestResults/opencover.xml'
-#      testRunTitle: ${{ parameters.projName }}
-#  
-#  - script: 'reportgenerator -reports:$(Build.SourcesDirectory)/TestResults/opencover.xml -targetdir:$(Build.SourcesDirectory)/reports -reporttypes:"HTML"'
-#    displayName: "Create HTML report"
-#  
-#  - script: 'reportgenerator -reports:$(Build.SourcesDirectory)/TestResults/opencover.xml -targetdir:$(Build.SourcesDirectory)/reports/coverlet -reporttypes:"Cobertura"'
-#    displayName: "Create Cobertura report"#
-#
-#  - task: PublishCodeCoverageResults@1
-#    displayName: "Publish code coverage HTML"
-#    inputs:
-#      codeCoverageTool: JaCoCo
-#      summaryFileLocation: "$(Build.SourcesDirectory)/reports/*.*"
-#     
-  #- task: PublishCodeCoverageResults@1
-  #  displayName: "Publish code coverage Cobertura"
-  #  inputs:
-  #    codeCoverageTool: Cobertura
-  #    summaryFileLocation: "$(Build.SourcesDirectory)/reports/coverlet/Cobertura.xml"
-      
+  # Plese notice that coverlet package generates a predefined file: .\TestResults\{guid}\coverage.cobertura.xml
+  # for additional info see: https://medium.com/geekculture/net-6-tests-coverge-with-coverlet-b6fe2605ee19
+  # do tnot use trx because of known issues of dotnet that duplicates testresult directory
   - task: DotNetCoreCLI@2
-    displayName: "dotnet test Cobertura - ${{ parameters.projName }}"
+    displayName: "dotnet test - ${{ parameters.projName }}"
     inputs:
       command: test
       projects: "${{ parameters.projPath }}/${{ parameters.projName }}.csproj"
-      arguments: '--logger trx --configuration Debug --collect "XPlat Code coverage" -- RunConfiguration.DisableAppDomain=true'
+      arguments: '--configuration Release --no-build --collect "XPlat Code coverage"'
       testRunTitle: ${{ parameters.projName }}
-    condition: eq('${{ parameters.reportOutputFormat }}', 'Cobertura')
 
-  - script: 'reportgenerator -reports:$(Agent.TempDirectory)/**/coverage.cobertura.xml -targetdir:$(Build.SourcesDirectory)/reports/coverlet -reporttypes:"Cobertura"'
-    displayName: "Create Cobertura report"
-    condition: eq('${{ parameters.reportOutputFormat }}', 'Cobertura')
+  - script: |
+      echo "Generating report from {csProj folder}/TestResults/{guid}/coverage.cobertura.xml...."
+      echo "Target Directory: $(Build.SourcesDirectory)/reports/coverlet"
+      reportgenerator -reports:$(Agent.TempDirectory)/**/coverage.cobertura.xml -targetdir:$(Build.SourcesDirectory)/reports/coverlet -reporttypes:"Cobertura"
+    displayName: "Create Code Coverage report"
 
   - task: PublishCodeCoverageResults@1
-    displayName: "Publish code coverage Cobertura"
+    displayName: "Publish code coverage report"
     inputs:
       codeCoverageTool: Cobertura
       summaryFileLocation: "$(Build.SourcesDirectory)/reports/coverlet/Cobertura.xml"
-    condition: eq('${{ parameters.reportOutputFormat }}', 'Cobertura')
+
+  - script: |
+      echo "Generating report from {csProj folder}/TestResults/{guid}/coverage.cobertura.xml...."
+      echo "Target Directory: $(Build.SourcesDirectory)/reports/coverlet"
+      reportgenerator -reports:$(Agent.TempDirectory)/**/coverage.cobertura.xml -targetdir:$(Agent.TempDirectory)/reports/html/${{ parameters.projName }} -reporttypes:"HTML"
+    displayName: "Create Code Coverage report HTML"
+
+  - task: CopyFiles@2
+    displayName: "Copy HTML report to staging"
+    inputs:
+      SourceFolder: $(Agent.TempDirectory)
+      contents: "reports/html/**"
+      targetFolder: $(Build.ArtifactStagingDirectory)

@@ -79,10 +79,10 @@ steps:
       projectName: "CLIArgumentsParser"
       projectVersion: "${{ parameters.MajorVersion }}.${{ parameters.MinorVersion }}"
       extraProperties: |
-        # Additional properties that will be passed to the scanner, Put one key=value per line, example:
+        # Additional properties that will be passed to the scanner, Put one key=value per line.
         sonar.exclusions=**/obj/**,**/*.dll,**/CliArgumentParser.Tests/**,**/CLIArgumentsParser.Tests/**/*.cs
         sonar.verbose=true
-        sonar.cs.opencover.reportsPaths=./TestResults/opencover.xml
+        sonar.cs.opencover.reportsPaths=**/TestResults/**/coverage.cobertura.xml
 
   - template: .\devops\templates\dotnet-package-pack.yaml
     parameters:
@@ -103,7 +103,6 @@ steps:
     parameters:
       projPath: src/CliArgumentParser.Tests
       projName: CliArgumentParser.Tests
-      reportOutputFormat: Cobertura
 
   - task: SonarCloudAnalyze@1
     displayName: "Run Sonar Cloud Analysis"
