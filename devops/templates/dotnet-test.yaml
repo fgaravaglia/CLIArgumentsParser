@@ -40,4 +40,4 @@ steps:
     inputs:
       SourceFolder: $(Agent.TempDirectory)
       contents: "reports/html/**"
-      targetFolder: $(Build.ArtifactStagingDirectory)/Reports
+      targetFolder: $(Build.ArtifactStagingDirectory)
