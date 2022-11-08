@@ -20,8 +20,16 @@ steps:
     inputs:
       command: test
       projects: "${{ parameters.projPath }}/${{ parameters.projName }}.csproj"
-      arguments: '--logger trx --configuration Debug --collect "Code Coverage" /p:CoverletOutputFormat=opencover /p:CoverletOutput=$(Common.TestResultsDirectory)/opencover.xml'
+      arguments: '--logger trx --configuration Debug /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=./TestResults/opencover.xml'
       testRunTitle: ${{ parameters.projName }}
+  
+  - script: 'reportgenerator -reports:./TestResults/opencover.xml -targetdir:$(Build.SourcesDirectory)/reports -reporttypes:"HTML"'
+    displayName: "Create Test Coverage report"
+   
+  - task: PublishCodeCoverageResults@1
+    displayName: "Publish code coverage Cobertura"
+    inputs:
+      summaryFileLocation: "$(Build.SourcesDirectory)/reports/*"
       
   - task: DotNetCoreCLI@2
     displayName: "dotnet test Cobertura - ${{ parameters.projName }}"
