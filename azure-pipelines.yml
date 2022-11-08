@@ -103,6 +103,7 @@ steps:
     parameters:
       projPath: src/CliArgumentParser.Tests
       projName: CliArgumentParser.Tests
+      reportOutputFormat: Cobertura
 
   - task: SonarCloudAnalyze@1
     displayName: "Run Sonar Cloud Analysis"
