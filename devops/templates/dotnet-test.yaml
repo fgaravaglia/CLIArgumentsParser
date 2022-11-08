@@ -20,16 +20,26 @@ steps:
     inputs:
       command: test
       projects: "${{ parameters.projPath }}/${{ parameters.projName }}.csproj"
-      arguments: '--logger trx --configuration Debug /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=./TestResults/opencover.xml'
+      arguments: '--logger trx --configuration Debug /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=$(Build.SourcesDirectory)/TestResults/opencover.xml'
       testRunTitle: ${{ parameters.projName }}
   
-  - script: 'reportgenerator -reports:./TestResults/opencover.xml -targetdir:$(Build.SourcesDirectory)/reports -reporttypes:"HTML"'
-    displayName: "Create Test Coverage report"
-   
+  - script: 'reportgenerator -reports:$(Build.SourcesDirectory)/TestResults/opencover.xml -targetdir:$(Build.SourcesDirectory)/reports -reporttypes:"HTML"'
+    displayName: "Create HTML report"
+  
+  - script: 'reportgenerator -reports:$(Build.SourcesDirectory)/TestResults/opencover.xml -targetdir:$(Build.SourcesDirectory)/reports/coverlet -reporttypes:"Cobertura"'
+    displayName: "Create Cobertura report"
+
   - task: PublishCodeCoverageResults@1
-    displayName: "Publish code coverage Cobertura"
+    displayName: "Publish code coverage HTML"
     inputs:
-      summaryFileLocation: "$(Build.SourcesDirectory)/reports/*"
+      codeCoverageTool: JaCoCo
+      summaryFileLocation: "$(Build.SourcesDirectory)/reports/*.*"
+     
+  #- task: PublishCodeCoverageResults@1
+  #  displayName: "Publish code coverage Cobertura"
+  #  inputs:
+  #    codeCoverageTool: Cobertura
+  #    summaryFileLocation: "$(Build.SourcesDirectory)/reports/coverlet/Cobertura.xml"
       
   - task: DotNetCoreCLI@2
     displayName: "dotnet test Cobertura - ${{ parameters.projName }}"
@@ -40,7 +50,7 @@ steps:
       testRunTitle: ${{ parameters.projName }}
     condition: eq('${{ parameters.reportOutputFormat }}', 'Cobertura')
 
-  - script: 'reportgenerator -reports:$(Agent.TempDirectory)/**/${{ parameters.testReportFileName }} -targetdir:$(Build.SourcesDirectory)/coverlet/reports -reporttypes:"Cobertura"'
+  - script: 'reportgenerator -reports:$(Agent.TempDirectory)/**/coverage.cobertura.xml -targetdir:$(Build.SourcesDirectory)/reports/coverlet -reporttypes:"Cobertura"'
     displayName: "Create Cobertura report"
     condition: eq('${{ parameters.reportOutputFormat }}', 'Cobertura')
 
@@ -48,5 +58,5 @@ steps:
     displayName: "Publish code coverage Cobertura"
     inputs:
       codeCoverageTool: Cobertura
-      summaryFileLocation: "$(Build.SourcesDirectory)/coverlet/reports/Cobertura.xml"
+      summaryFileLocation: "$(Build.SourcesDirectory)/reports/coverlet/Cobertura.xml"
     condition: eq('${{ parameters.reportOutputFormat }}', 'Cobertura')
