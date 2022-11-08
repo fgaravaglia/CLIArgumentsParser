@@ -109,7 +109,7 @@ steps:
     inputs:
       command: "build"
       arguments: "--configuration Release -v=q"
-      projects: "${{ parameters.projPath }}/*.csproj"
+      projects: "src/CliArgumentParser.Tests/*.csproj"
 
   # see https://docs.sonarcloud.io/enriching/test-coverage/dotnet-test-coverage/
   - script: |
