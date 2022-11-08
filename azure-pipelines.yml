@@ -82,7 +82,7 @@ steps:
         # Additional properties that will be passed to the scanner, Put one key=value per line, example:
         sonar.exclusions=**/obj/**,**/*.dll,**/CliArgumentParser.Tests/**,**/CLIArgumentsParser.Tests/**/*.cs
         sonar.verbose=true
-        sonar.cs.opencover.reportsPaths=./TestResults/coverage.cobertura.xml,**/coverage.cobertura.xml,**/reports/coverlet/Cobertura.xml
+        sonar.cs.opencover.reportsPaths=coverage.xml,./TestResults/coverage.cobertura.xml,**/coverage.cobertura.xml,**/reports/coverlet/Cobertura.xml
 
   - template: .\devops\templates\dotnet-package-pack.yaml
     parameters:
@@ -103,6 +103,17 @@ steps:
     parameters:
       projPath: src/CliArgumentParser.Tests
       projName: CliArgumentParser.Tests
+
+  # see https://docs.sonarcloud.io/enriching/test-coverage/dotnet-test-coverage/
+  - script: |
+      coverlet ./src/CliArgumentParser.Tests/bin/Release/net6.0/CliArgumentParser.Tests.dll --target "dotnet" --targetargs "test --no-build" -f=opencover -o="coverage.xml"
+    displayName: "Run Test Coverage"
+
+  # - task: CopyFiles@2
+  #   displayName: "Copy Test results to staging folder"
+  #   inputs:
+  #     contents: '$(Agent.TempDirectory)/TestResults/**'
+  #     targetFolder: $(Build.ArtifactStagingDirectory)/TestResults
 
   - task: SonarCloudAnalyze@1
     displayName: "Run Sonar Cloud Analysis"
