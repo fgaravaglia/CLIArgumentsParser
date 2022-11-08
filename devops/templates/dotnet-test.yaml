@@ -38,5 +38,6 @@ steps:
   - task: CopyFiles@2
     displayName: "Copy HTML report to staging"
     inputs:
-      contents: "$(Agent.TempDirectory)/reports/html/**"
+      SourceFolder: $(Agent.TempDirectory)
+      contents: "reports/html/**"
       targetFolder: $(Build.ArtifactStagingDirectory)/Reports
