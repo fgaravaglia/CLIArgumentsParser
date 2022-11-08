@@ -15,19 +15,19 @@ parameters:
     default: coverage.cobertura.xml
 
 steps:
-  - task: DotNetCoreCLI@2
-    displayName: "dotnet test - ${{ parameters.projName }}"
-    inputs:
-      command: test
-      projects: "${{ parameters.projPath }}/${{ parameters.projName }}.csproj"
-      arguments: '--configuration Release /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=./TestResults/opencover.xml'
-      testRunTitle: ${{ parameters.projName }}
+  # - task: DotNetCoreCLI@2
+  #   displayName: "dotnet test - ${{ parameters.projName }}"
+  #   inputs:
+  #     command: test
+  #     projects: "${{ parameters.projPath }}/${{ parameters.projName }}.csproj"
+  #     arguments: '--configuration Release /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=./TestResults/opencover.xml'
+  #     testRunTitle: ${{ parameters.projName }}
 
-  - task: CopyFiles@2
-    displayName: "Copy opencover.xml to staging folder"
-    inputs:
-      contents: './TestResults/**'
-      targetFolder: $(Build.ArtifactStagingDirectory)
+  # - task: CopyFiles@2
+  #   displayName: "Copy opencover.xml to staging folder"
+  #   inputs:
+  #     contents: './TestResults/**'
+  #     targetFolder: $(Build.ArtifactStagingDirectory)
   
   # - script: |
   #     reportgenerator -reports:./TestResults/opencover.xml -targetdir:$(Build.SourcesDirectory)/reports -reporttypes:"HTML"
@@ -53,7 +53,9 @@ steps:
   #  inputs:
   #    codeCoverageTool: Cobertura
   #    summaryFileLocation: "$(Build.SourcesDirectory)/reports/coverlet/Cobertura.xml"
-      
+
+  # Plese notice that coverlet package generates a predefined file: .\TestResults\{guid}\coverage.cobertura.xml 
+  # for additional info see: https://medium.com/geekculture/net-6-tests-coverge-with-coverlet-b6fe2605ee19  
   - task: DotNetCoreCLI@2
     displayName: "dotnet test Cobertura - ${{ parameters.projName }}"
     inputs:
@@ -61,16 +63,19 @@ steps:
       projects: "${{ parameters.projPath }}/${{ parameters.projName }}.csproj"
       arguments: '--logger trx --configuration Debug --collect "XPlat Code coverage" -- RunConfiguration.DisableAppDomain=true'
       testRunTitle: ${{ parameters.projName }}
-    condition: eq('${{ parameters.reportOutputFormat }}', 'Cobertura')
+
+  - task: CopyFiles@2
+    displayName: "Copy Test results to staging folder"
+    inputs:
+      contents: '$(Build.SourcesDirectory)/${{ parameters.projPath }}/TestResults/**'
+      targetFolder: $(Build.ArtifactStagingDirectory)/TestResults
 
   - script: |
       reportgenerator -reports:$(Agent.TempDirectory)/**/coverage.cobertura.xml -targetdir:$(Build.SourcesDirectory)/reports/coverlet -reporttypes:"Cobertura"
     displayName: "Create Cobertura report"
-    condition: eq('${{ parameters.reportOutputFormat }}', 'Cobertura')
 
   - task: PublishCodeCoverageResults@1
     displayName: "Publish code coverage Cobertura"
     inputs:
       codeCoverageTool: Cobertura
       summaryFileLocation: "$(Build.SourcesDirectory)/reports/coverlet/Cobertura.xml"
-    condition: eq('${{ parameters.reportOutputFormat }}', 'Cobertura')
