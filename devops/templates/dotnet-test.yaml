@@ -15,27 +15,30 @@ parameters:
     default: coverage.cobertura.xml
 
 steps:
-#  - task: DotNetCoreCLI@2
-#    displayName: "dotnet test on ${{ parameters.projName }}"
-#    inputs:
-#      command: test
-#      projects: "${{ parameters.projPath }}/${{ parameters.projName }}.csproj"
-#      arguments: '--logger trx --configuration Debug --collect "XPlat Code coverage" -- RunConfiguration.DisableAppDomain=true'
-#      testRunTitle: ${{ parameters.projName }}
-      
   - task: DotNetCoreCLI@2
-    displayName: "dotnet test on ${{ parameters.projName }}"
+    displayName: "dotnet test - ${{ parameters.projName }}"
     inputs:
       command: test
       projects: "${{ parameters.projPath }}/${{ parameters.projName }}.csproj"
-      arguments: '--logger trx --configuration Debug --collect "Code Coverage" /p:CoverletOutputFormat=${{ parameters.reportOutputFormat }} /p:CoverletOutput=$(Common.TestResultsDirectory)/opencover.xml'
+      arguments: '--logger trx --configuration Debug --collect "Code Coverage" /p:CoverletOutputFormat=opencover /p:CoverletOutput=$(Common.TestResultsDirectory)/opencover.xml'
       testRunTitle: ${{ parameters.projName }}
+      
+  - task: DotNetCoreCLI@2
+    displayName: "dotnet test Cobertura - ${{ parameters.projName }}"
+    inputs:
+      command: test
+      projects: "${{ parameters.projPath }}/${{ parameters.projName }}.csproj"
+      arguments: '--logger trx --configuration Debug --collect "XPlat Code coverage" -- RunConfiguration.DisableAppDomain=true'
+      testRunTitle: ${{ parameters.projName }}
+    condition: eq('${{ parameters.reportOutputFormat }}', 'Cobertura')
 
   - script: 'reportgenerator -reports:$(Agent.TempDirectory)/**/${{ parameters.testReportFileName }} -targetdir:$(Build.SourcesDirectory)/coverlet/reports -reporttypes:"Cobertura"'
-    displayName: "Create Coveage reports"
+    displayName: "Create Cobertura report"
+    condition: eq('${{ parameters.reportOutputFormat }}', 'Cobertura')
 
   - task: PublishCodeCoverageResults@1
-    displayName: "Publish code coverage"
+    displayName: "Publish code coverage Cobertura"
     inputs:
       codeCoverageTool: Cobertura
       summaryFileLocation: "$(Build.SourcesDirectory)/coverlet/reports/Cobertura.xml"
+    condition: eq('${{ parameters.reportOutputFormat }}', 'Cobertura')
