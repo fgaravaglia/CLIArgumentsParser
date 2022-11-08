@@ -4,17 +4,31 @@ parameters:
   - name: projName
     displayName: "name of csProj file (without extension)"
     default: ""
+  - name: collectType
+    displayName: "Type of metrics to collect"
+    default: Code Coverage
+  - name: reportOutputFormat
+    displayName: "Format of the report to produce after test run"
+    default: opencover
   - name: testReportFileName
     displayName: "FileName of test report generate by coverlet"
     default: coverage.cobertura.xml
 
 steps:
+#  - task: DotNetCoreCLI@2
+#    displayName: "dotnet test on ${{ parameters.projName }}"
+#    inputs:
+#      command: test
+#      projects: "${{ parameters.projPath }}/${{ parameters.projName }}.csproj"
+#      arguments: '--logger trx --configuration Debug --collect "XPlat Code coverage" -- RunConfiguration.DisableAppDomain=true'
+#      testRunTitle: ${{ parameters.projName }}
+      
   - task: DotNetCoreCLI@2
     displayName: "dotnet test on ${{ parameters.projName }}"
     inputs:
       command: test
       projects: "${{ parameters.projPath }}/${{ parameters.projName }}.csproj"
-      arguments: '--logger trx --configuration Debug --collect "XPlat Code coverage" -- RunConfiguration.DisableAppDomain=true /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=$(Common.TestResultsDirectory)\opencover.xml'
+      arguments: '--logger trx --configuration Debug --collect "Code Coverage" /p:CoverletOutputFormat=${{ parameters.reportOutputFormat }} /p:CoverletOutput=$(Common.TestResultsDirectory)/opencover.xml'
       testRunTitle: ${{ parameters.projName }}
 
   - script: 'reportgenerator -reports:$(Agent.TempDirectory)/**/${{ parameters.testReportFileName }} -targetdir:$(Build.SourcesDirectory)/coverlet/reports -reporttypes:"Cobertura"'
