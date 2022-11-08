@@ -15,13 +15,13 @@ parameters:
     default: coverage.cobertura.xml
 
 steps:
- - task: DotNetCoreCLI@2
-   displayName: "dotnet test - ${{ parameters.projName }}"
-   inputs:
-     command: test
-     projects: "${{ parameters.projPath }}/${{ parameters.projName }}.csproj"
-     arguments: '--logger trx --configuration Release /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=./TestResults/opencover.xml'
-     testRunTitle: ${{ parameters.projName }}
+  - task: DotNetCoreCLI@2
+    displayName: "dotnet test - ${{ parameters.projName }}"
+    inputs:
+      command: test
+      projects: "${{ parameters.projPath }}/${{ parameters.projName }}.csproj"
+      arguments: '--logger trx --configuration Release /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=./TestResults/opencover.xml'
+      testRunTitle: ${{ parameters.projName }}
 
   - task: CopyFiles@2
     displayName: "Copy opencover.xml to staging folder"
