@@ -26,11 +26,18 @@ steps:
   - task: CopyFiles@2
     displayName: "Copy opencover.xml to staging folder"
     inputs:
-      contents: './TestResults/${{ parameters.coverletOutputFileName }}'
+      contents: './TestResults/**'
       targetFolder: $(Build.ArtifactStagingDirectory)
-#  
-#  - script: 'reportgenerator -reports:./TestResults/opencover.xml -targetdir:$(Build.SourcesDirectory)/reports -reporttypes:"HTML"'
-#    displayName: "Create HTML report"
+  
+  - script: |
+      reportgenerator -reports:./TestResults/opencover.xml -targetdir:$(Build.SourcesDirectory)/reports -reporttypes:"HTML"
+    displayName: "Create HTML report"
+
+  - task: CopyFiles@2
+    displayName: "Copy html report to staging folder"
+    inputs:
+      contents: '$(Build.SourcesDirectory)/reports/**'
+      targetFolder: $(Build.ArtifactStagingDirectory)
 #  
 #  - script: 'reportgenerator -reports:$(Build.SourcesDirectory)/TestResults/opencover.xml -targetdir:$(Build.SourcesDirectory)/reports/coverlet -reporttypes:"Cobertura"'
 #    displayName: "Create Cobertura report"#
