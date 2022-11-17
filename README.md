@@ -3,12 +3,14 @@ Library to easily manage and parse CLI arguments
 
 [![Build Status](https://garaproject.visualstudio.com/CLIArgumentParser/_apis/build/status/CLIArgumentsParser-CI?branchName=master)](https://garaproject.visualstudio.com/CLIArgumentParser/_build/latest?definitionId=70&branchName=master)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=fgaravaglia_CLIArgumentsParser&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=fgaravaglia_CLIArgumentsParser)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=fgaravaglia_CLIArgumentsParser&metric=coverage)](https://sonarcloud.io/summary/new_code?id=fgaravaglia_CLIArgumentsParser)
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=fgaravaglia_CLIArgumentsParser&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=fgaravaglia_CLIArgumentsParser)
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=fgaravaglia_CLIArgumentsParser&metric=bugs)](https://sonarcloud.io/summary/new_code?id=fgaravaglia_CLIArgumentsParser)
 [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=fgaravaglia_CLIArgumentsParser&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=fgaravaglia_CLIArgumentsParser)
 
-Current Version: Stable - 1.2.1975 - branch MASTER
+
+[![Nuget](https://img.shields.io/nuget/v/CLIArgumentParser.svg?style=plastic)](https://www.nuget.org/packages/CLIArgumentParser/)
+[![NuGet Downloads](https://img.shields.io/nuget/dt/CLIArgumentParser.svg)](https://www.nuget.org/packages/CLIArgumentParser/)
+
 
 To install it, use proper command:
 ```
@@ -36,7 +38,7 @@ To define you model, create a class inheriting from CliCommand one.
 ```
 
 Remember to:
-- define the method _SetDefaultValues_ to fill rpoper option dictionary
+- define the method _SetDefaultValues_ to fill proper option dictionary
 - define the properties of command, with decorators (see the paragraph)
 - define examples
 
@@ -83,7 +85,7 @@ public override void ParseArgument(string[] tokens)
 ```
 
 
-# How to define examples
+## How to define examples
 Each command shold contain a list of example, to understand how to use it.
 So far, you have to complete the abstract method:
 
@@ -96,4 +98,22 @@ So far, you have to complete the abstract method:
                                         ScanCommand.AsExampleFor(@"C:\Temp\MyFolder", ".csproj", @"\NugetPackages\", "CSV"))
             };
         }
+```
+
+# Usage
+the usage is very simple:
+
+```c#
+// Set up the factory of command
+var factory = new CommandFactory().RegisterCommand<ScanCommand>("scan");
+
+// parse the argument and run the callback if properly set
+int exitResult = factory.InstanceFromFactory()
+                                .UsingDefaultErrorManagement()
+                                .ParseTheseArguments(args)
+                                .CaseWhen<ScanCommand>(x => ExploreTheTree(x))
+                                .Return();
+                                
+// return the proper exit value               
+Environment.Exit(exitResult);
 ```
