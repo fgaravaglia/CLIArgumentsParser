@@ -7,10 +7,8 @@ Library to easily manage and parse CLI arguments
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=fgaravaglia_CLIArgumentsParser&metric=bugs)](https://sonarcloud.io/summary/new_code?id=fgaravaglia_CLIArgumentsParser)
 [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=fgaravaglia_CLIArgumentsParser&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=fgaravaglia_CLIArgumentsParser)
 
-
 [![Nuget](https://img.shields.io/nuget/v/CLIArgumentParser.svg?style=plastic)](https://www.nuget.org/packages/CLIArgumentParser/)
 [![NuGet Downloads](https://img.shields.io/nuget/dt/CLIArgumentParser.svg)](https://www.nuget.org/packages/CLIArgumentParser/)
-
 
 To install it, use proper command:
 ```

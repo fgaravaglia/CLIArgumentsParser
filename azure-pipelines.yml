@@ -49,7 +49,7 @@ parameters:
     default: "set here your Nuget Api Key"
 
 variables:
-  buildConfiguration: "Release"
+  buildConfiguration: Release
   targetFramework: "6.x"
   nugetVersion: ${{ parameters.MajorVersion }}.${{ parameters.MinorVersion }}.$(Build.BuildId)
   testReportFileName: cobertura.xml
@@ -67,11 +67,7 @@ steps:
     inputs:
       checkLatest: true
 
-  - script: |
-      echo "Build ID      => $(Build.BuildId)"
-      echo "Build Number  => $(Build.BuildNumber)"
-      dotnet tool install --global dotnet-reportgenerator-globaltool
-    displayName: "Install ReportGenerator tool"
+  - template: .\devops\templates\dotnet-tool-install-coverlet.yaml
 
   - task: SonarCloudPrepare@1
     displayName: "Prepare analysis on SonarCloud"
@@ -83,11 +79,10 @@ steps:
       projectName: "CLIArgumentsParser"
       projectVersion: "${{ parameters.MajorVersion }}.${{ parameters.MinorVersion }}"
       extraProperties: |
-        # Additional properties that will be passed to the scanner, 
-        # Put one key=value per line, example:
+        # Additional properties that will be passed to the scanner, Put one key=value per line.
         sonar.exclusions=**/obj/**,**/*.dll,**/CliArgumentParser.Tests/**,**/CLIArgumentsParser.Tests/**/*.cs
-        sonar.cs.vstest.reportsPaths=$(Agent.TempDirectory)/*.trx
-        sonar.cs.opencover.reportsPaths=$(Build.SourcesDirectory)/**/$(testReportFileName)
+        sonar.verbose=true
+        sonar.cs.opencover.reportsPaths=**/TestResults/**/coverage.cobertura.xml
 
   - template: .\devops\templates\dotnet-package-pack.yaml
     parameters:
