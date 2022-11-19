@@ -1,4 +1,6 @@
 # CLIArgumentsParser
+![image info](./resources/CliArgumentParserLogo.png)
+
 Library to easily manage and parse CLI arguments
 
 [![Build Status](https://garaproject.visualstudio.com/CLIArgumentParser/_apis/build/status/CLIArgumentsParser-CI?branchName=master)](https://garaproject.visualstudio.com/CLIArgumentParser/_build/latest?definitionId=70&branchName=master)
