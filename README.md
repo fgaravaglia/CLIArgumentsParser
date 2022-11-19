@@ -10,9 +10,14 @@ Library to easily manage and parse CLI arguments
 [![Nuget](https://img.shields.io/nuget/v/CLIArgumentParser.svg?style=plastic)](https://www.nuget.org/packages/CLIArgumentParser/)
 [![NuGet Downloads](https://img.shields.io/nuget/dt/CLIArgumentParser.svg)](https://www.nuget.org/packages/CLIArgumentParser/)
 
+
+Other Builds:
+- Branch 1.2: [![Build Status](https://garaproject.visualstudio.com/CLIArgumentParser/_apis/build/status/CLIArgumentsParser-CI?branchName=CliArgumentParser-1.2)](https://garaproject.visualstudio.com/CLIArgumentParser/_build/latest?definitionId=70&branchName=CliArgumentParser-1.2)
+
+
 To install it, use proper command:
 ```
-dotnet add package CliArgumentParser --version 1.2.1975
+dotnet add package CliArgumentParser
 ```
 
 For more details about download, see [NuGet Web Site](https://www.nuget.org/packages/CliArgumentParser#readme-body-tab)
@@ -81,6 +86,48 @@ public override void ParseArgument(string[] tokens)
             }
         }
 ```
+## Bollean Option
+to use boolean options, use the following approach.
+
+<b>Define the option as boolean</b>
+```c#
+        [Option(OPT_VERBOSE, "Verbosity Level", isMandatory: true)]
+        public bool IsVerbose
+        {
+            get { return this.GetBooleanArgumentValue<TestWithFlagCommand, bool>(x => x.IsVerbose); }
+            set { this.AddOrUpdateArgument<TestWithFlagCommand, bool>(x => x.IsVerbose, value); }
+        }
+```
+
+<b>Set defaults</b>
+```c#
+        public override void SetDefaultValues()
+        {
+            base.SetDefaultValues();
+
+            this.IsVerbose = false;
+        }
+```
+
+<b>Parse the arguments</b>
+```c#
+        public override void ParseArgument(string[] tokens)
+        {
+            // validate option
+            switch (tokens[0])
+            {
+                case OPT_VERBOSE:
+                    this.IsVerbose = true;
+                    break;
+
+                default:
+                    throw new WrongOptionUsageException(this.Verb, tokens[0]);
+            }
+        }
+```
+
+Notice that you must to process also specific tokens made by unique command;
+for more information see tests.
 
 
 ## How to define examples
