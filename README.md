@@ -1,5 +1,5 @@
 # CLIArgumentsParser
-![image info](./resources/CliArgumentParserLogo.png)
+![image info](./resources/CliArgumentParserLogo.128.png)
 
 Library to easily manage and parse CLI arguments
 
