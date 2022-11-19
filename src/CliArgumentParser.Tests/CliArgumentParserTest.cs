@@ -19,6 +19,7 @@ namespace CliArgumentParser.Tests
             var factory = new CommandFactory();
             factory.RegisterCommand<ScanCommand>("scan");
             factory.RegisterCommand<PrintCommand>("print");
+            factory.RegisterCommand<TestWithFlagCommand>("flag");
             this._Parser = factory.InstanceFromFactory().UsingDefaultErrorManagement();
         }
 
@@ -174,6 +175,26 @@ namespace CliArgumentParser.Tests
         }
 
         [Test]
+        public void ParseArguments_WithFlag_HasNoErrors()
+        {
+            //******* GIVEN
+            var myargs = new string[]
+            {
+                "flag",
+                @"-verbose"
+            };
+
+            //******* WHEN
+            this._Parser.ParseArguments(myargs);
+
+
+            //******* ASSERT
+            Assert.That(this._Parser.HasError, Is.EqualTo(false));
+            Assert.Pass();
+        }
+
+
+        [Test]
         public void RunCallback_ThrowsException_IfCallbackIsNull()
         {
             //******* GIVEN
@@ -240,6 +261,30 @@ namespace CliArgumentParser.Tests
             //******* ASSERT
             Assert.That(this._Parser.HasError, Is.EqualTo(false));
             Assert.That(isExecuted, Is.EqualTo(false));
+            Assert.Pass();
+        }
+
+        [Test]
+        public void RunCallback_ExecutesTheAction_UsingCommandWithFlag()
+        {
+            //******* GIVEN
+            var myargs = new string[]
+            {
+                "flag",
+                @"-verbose"
+            };
+            this._Parser.ParseArguments(myargs);
+            bool isExecuted = false;
+            TestWithFlagCommand parsedCmd = null;
+
+            //******* WHEN
+            this._Parser.RunCallbackFor<TestWithFlagCommand>(x => { isExecuted = true; parsedCmd = x; });
+
+            //******* ASSERT
+            Assert.That(this._Parser.HasError, Is.EqualTo(false));
+            Assert.That(isExecuted, Is.EqualTo(true));
+            Assert.False(parsedCmd == null);
+            Assert.True(parsedCmd.IsVerbose);
             Assert.Pass();
         }
     }

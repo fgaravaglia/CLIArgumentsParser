@@ -81,6 +81,48 @@ public override void ParseArgument(string[] tokens)
             }
         }
 ```
+## Bollean Option
+to use boolean options, use the following approach.
+
+<b>Define the option as boolean</b>
+```c#
+        [Option(OPT_VERBOSE, "Verbosity Level", isMandatory: true)]
+        public bool IsVerbose
+        {
+            get { return this.GetBooleanArgumentValue<TestWithFlagCommand, bool>(x => x.IsVerbose); }
+            set { this.AddOrUpdateArgument<TestWithFlagCommand, bool>(x => x.IsVerbose, value); }
+        }
+```
+
+<b>Set defaults</b>
+```c#
+        public override void SetDefaultValues()
+        {
+            base.SetDefaultValues();
+
+            this.IsVerbose = false;
+        }
+```
+
+<b>Parse the arguments</b>
+```c#
+        public override void ParseArgument(string[] tokens)
+        {
+            // validate option
+            switch (tokens[0])
+            {
+                case OPT_VERBOSE:
+                    this.IsVerbose = true;
+                    break;
+
+                default:
+                    throw new WrongOptionUsageException(this.Verb, tokens[0]);
+            }
+        }
+```
+
+Notice that you must to process also specific tokens made by unique command;
+for more information see tests.
 
 
 ## How to define examples
