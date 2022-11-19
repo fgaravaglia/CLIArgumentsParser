@@ -10,9 +10,14 @@ Library to easily manage and parse CLI arguments
 [![Nuget](https://img.shields.io/nuget/v/CLIArgumentParser.svg?style=plastic)](https://www.nuget.org/packages/CLIArgumentParser/)
 [![NuGet Downloads](https://img.shields.io/nuget/dt/CLIArgumentParser.svg)](https://www.nuget.org/packages/CLIArgumentParser/)
 
+
+Other Builds:
+- Branch 1.2: 
+
+
 To install it, use proper command:
 ```
-dotnet add package CliArgumentParser --version 1.2.1975
+dotnet add package CliArgumentParser
 ```
 
 For more details about download, see [NuGet Web Site](https://www.nuget.org/packages/CliArgumentParser#readme-body-tab)

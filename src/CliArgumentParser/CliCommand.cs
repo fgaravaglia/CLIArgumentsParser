@@ -72,12 +72,15 @@ namespace CliArgumentParser
 
         #region Protected Methods
 
-        protected void AddOrUpdateArgument<TSource, TProperty>(Expression<Func<TSource, TProperty>> propertyLambda, string value) where TSource : CliCommand
+        protected void AddOrUpdateArgument<TSource, TProperty>(Expression<Func<TSource, TProperty>> propertyLambda, TProperty value) where TSource : CliCommand
         {
-            var option = this.As<TSource>().GetOptionAttributeFromProperty<TSource,TProperty>(propertyLambda);
-            this.AddOrUpdateArgument(option.Name, option.Description, value);
+            var option = this.As<TSource>().GetOptionAttributeFromProperty<TSource, TProperty>(propertyLambda);
+            var stringValue = value == null ? "" : value.ToString();
+            if (String.IsNullOrEmpty(stringValue))
+                stringValue = "";
+            this.AddOrUpdateArgument(option.Name, option.Description, stringValue);
         }
-
+        
         protected string GetArgumentValue<TSource, TProperty>(Expression<Func<TSource, TProperty>> propertyLambda) where TSource : CliCommand
         {
             var option = this.As<TSource>().GetOptionAttributeFromProperty<TSource, TProperty>(propertyLambda);
@@ -85,19 +88,10 @@ namespace CliArgumentParser
             return arg is null ? string.Empty : arg.Value;
         }
 
-        protected void AddOrUpdateArgument<TSource, TProperty>(Expression<Func<TSource, TProperty>> propertyLambda, TProperty value) where TSource : CliCommand
-        {
-            var option = this.As<TSource>().GetOptionAttributeFromProperty<TSource, TProperty>(propertyLambda);
-            var stringValue = value == null ? "" : value.ToString();
-            if(String.IsNullOrEmpty(stringValue))
-                stringValue = "";
-            this.AddOrUpdateArgument(option.Name, option.Description, stringValue);
-        }
-
         protected bool GetBooleanArgumentValue<TSource, TProperty>(Expression<Func<TSource, TProperty>> propertyLambda) where TSource : CliCommand
         {
             var stringValue = GetArgumentValue<TSource, TProperty>(propertyLambda);
-            return String.IsNullOrEmpty(stringValue) ? false : Convert.ToBoolean(stringValue);
+            return !String.IsNullOrEmpty(stringValue) && Convert.ToBoolean(stringValue);
         }
 
         protected int GetIntegerArgumentValue<TSource, TProperty>(Expression<Func<TSource, TProperty>> propertyLambda) where TSource : CliCommand
