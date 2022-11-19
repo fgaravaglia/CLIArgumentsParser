@@ -12,7 +12,7 @@ Library to easily manage and parse CLI arguments
 
 
 Other Builds:
-- Branch 1.2: 
+- Branch 1.2: [![Build Status](https://garaproject.visualstudio.com/CLIArgumentParser/_apis/build/status/CLIArgumentsParser-CI?branchName=CliArgumentParser-1.2)](https://garaproject.visualstudio.com/CLIArgumentParser/_build/latest?definitionId=70&branchName=CliArgumentParser-1.2)
 
 
 To install it, use proper command:
