@@ -25,6 +25,11 @@ namespace CliArgumentParser
         /// </summary>
         /// <returns></returns>
         string DefinitionToString();
+        /// <summary>
+        /// COnverts the command with examples to give usage indications to user
+        /// </summary>
+        /// <returns></returns>
+        string UsageToString();
     }
 
     internal class CommandStringConverter : ICommandStringConverter
@@ -70,16 +75,31 @@ namespace CliArgumentParser
         /// <returns></returns>
         public string StatementToString()
         {
+            // get decorators
+            var options = this._Cmd.GetOptionAttribute();
             StringBuilder message = new StringBuilder();
             message.Append(this._Cmd.Verb + " ");
             foreach (var arg in this._Cmd.Arguments)
             {
+                // if an option is null we can ignore it 
+                if(String.IsNullOrEmpty(arg.Value))
+                    continue;
+                    
+                // if boolean not-mandatory option is false, it measn that it was not set: ignore it
+                var opt = options.SingleOrDefault(x => x.Name == arg.Name);
+                if(opt != null && !opt.IsMandatory  && arg.Value.ToLowerInvariant() == "false")
+                    continue;
+                
+                // print other options
                 message.Append(arg.Name).Append("=" + arg.Value);
                 message.Append(' ');
             }
             return message.ToString();
         }
-
+        /// <summary>
+        /// <inheritdoc />
+        /// </summary>
+        /// <returns></returns>
         public string UsageToString()
         {
             StringBuilder message = new StringBuilder();
