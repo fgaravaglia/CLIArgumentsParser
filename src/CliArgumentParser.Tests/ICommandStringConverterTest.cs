@@ -146,7 +146,7 @@ Options:
             Assert.That(definition.Length, Is.Not.EqualTo(0));
             var testString = definition.Split("Example:", 2)[1];
             var expectedString = @" List with no filter
-list -verbose=False -folder=C:\Temp 
+list -folder=C:\Temp 
 ---------------------------------------------------------------
 ";
             Assert.That(testString, Is.EqualTo(expectedString));
