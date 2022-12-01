@@ -3,6 +3,13 @@
 
 Library to easily manage and parse CLI arguments
 
+To install it, use proper command:
+```
+dotnet add package CliArgumentParser
+```
+
+For more details about download, see [NuGet Web Site](https://www.nuget.org/packages/CliArgumentParser#readme-body-tab)
+
 [![Build Status](https://garaproject.visualstudio.com/CLIArgumentParser/_apis/build/status/CLIArgumentsParser-CI?branchName=master)](https://garaproject.visualstudio.com/CLIArgumentParser/_build/latest?definitionId=70&branchName=master)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=fgaravaglia_CLIArgumentsParser&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=fgaravaglia_CLIArgumentsParser)
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=fgaravaglia_CLIArgumentsParser&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=fgaravaglia_CLIArgumentsParser)
@@ -18,18 +25,13 @@ Library to easily manage and parse CLI arguments
 [![NuGet Downloads](https://img.shields.io/nuget/dt/CLIArgumentParser.svg)](https://www.nuget.org/packages/CLIArgumentParser/)
 
 
-Other Builds:
+<b>Other Builds</b>
+
 - Branch 1.2: [![Build Status](https://garaproject.visualstudio.com/CLIArgumentParser/_apis/build/status/CLIArgumentsParser-CI?branchName=CliArgumentParser-1.2)](https://garaproject.visualstudio.com/CLIArgumentParser/_build/latest?definitionId=70&branchName=CliArgumentParser-1.2)
 
 
-To install it, use proper command:
-```
-dotnet add package CliArgumentParser
-```
+<b>Main Features</b>
 
-For more details about download, see [NuGet Web Site](https://www.nuget.org/packages/CliArgumentParser#readme-body-tab)
-
-Main Features
 ----------------------------------
 - define a model of usage for your CLI applications
 - Automatic parse and validation of your arguments against the defined model
