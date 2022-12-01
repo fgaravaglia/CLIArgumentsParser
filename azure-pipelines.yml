@@ -45,9 +45,6 @@ parameters:
     displayName: "Publish Package to Nuget.Org"
     type: boolean
     default: False
-  - name: NugetApiKey
-    displayName: "APIKEY to Publish Package on Nuget.Org"
-    default: "set here your Nuget Api Key"
 
 variables:
   buildConfiguration: Release
@@ -121,6 +118,18 @@ steps:
       ArtifactName: "drop"
       publishLocation: "Container"
 
+  - task: DownloadSecureFile@1
+    ame: nugetOrgKey
+    displayName: "Download Nuget Api Key"
+    inputs:
+      secureFile: "Nuget.apikey.txt"
+      retryCount: "5"
+
+  - powershell: |
+      $key = Get-Content -Path $(nugetOrgKey.secureFilePath)
+      Write-Host "##vso[task.setvariable variable=ReadApiKey;]$key"
+    displayName: Get Nuget.org NugetApiKey
+
   - task: DotNetCoreCLI@2
     displayName: Push to Nuget.org
     inputs:
@@ -129,5 +138,5 @@ steps:
       arguments: >
         push $(Build.ArtifactStagingDirectory)/CliArgumentParser.*.nupkg
         -s https://api.nuget.org/v3/index.json
-        -k ${{ parameters.NugetApiKey }}
+        -k $(ReadApiKey)
     condition: eq(${{ parameters.PublishPackage }}, true)

@@ -20,6 +20,7 @@ namespace CliArgumentParser.Tests
             factory.RegisterCommand<ScanCommand>("scan");
             factory.RegisterCommand<PrintCommand>("print");
             factory.RegisterCommand<TestWithFlagCommand>("flag");
+            factory.RegisterCommand<ListCommand>("list");
             this._Parser = factory.InstanceFromFactory().UsingDefaultErrorManagement();
         }
 
@@ -58,6 +59,8 @@ namespace CliArgumentParser.Tests
             Assert.Pass();
         }
 
+        #region Test on SetErrorCallback Method
+
         [Test]
         public void SetErrorCallback_ThrowException_IfCallbackIsNull()
         {
@@ -88,6 +91,10 @@ namespace CliArgumentParser.Tests
             AssertExceptionHasStringPropertyEqualsTo<ArgumentException>(x => x.ParamName, "callback");
             Assert.Pass();
         }
+
+        #endregion
+
+        #region Test on ParseArguments Method
 
         [Test]
         public void ParseArguments_WithNoArgs_HasErrorsButNoExceptionIsthrown()
@@ -151,7 +158,6 @@ namespace CliArgumentParser.Tests
             Assert.Pass();
         }
 
-
         [Test]
         public void ParseArguments_WithValidArgs_HasNoErrors()
         {
@@ -193,7 +199,48 @@ namespace CliArgumentParser.Tests
             Assert.Pass();
         }
 
+        [Test]
+        public void ParseArguments_WithFlagNotMandatory_HasNoErrors()
+        {
+            //******* GIVEN
+            var myargs = new string[]
+            {
+                "list",
+                @"-folder=C:\temp",
+                @"-verbose"
+            };
 
+            //******* WHEN
+            this._Parser.ParseArguments(myargs);
+
+
+            //******* ASSERT
+            Assert.That(this._Parser.HasError, Is.EqualTo(false));
+            Assert.Pass();
+        }
+
+        [Test]
+        public void ParseArguments_WithoutFlagNotMandatory_HasNoErrors()
+        {
+            //******* GIVEN
+            var myargs = new string[]
+            {
+                "list",
+                @"-folder=C:\temp",
+            };
+
+            //******* WHEN
+            this._Parser.ParseArguments(myargs);
+
+
+            //******* ASSERT
+            Assert.That(this._Parser.HasError, Is.EqualTo(false));
+            Assert.Pass();
+        }
+
+        #endregion
+
+        #region Test on RunCallback Method
         [Test]
         public void RunCallback_ThrowsException_IfCallbackIsNull()
         {
@@ -287,5 +334,63 @@ namespace CliArgumentParser.Tests
             Assert.True(parsedCmd.IsVerbose);
             Assert.Pass();
         }
+
+        [Test]
+        public void RunCallback_ExecutesTheAction_UsingCommandWithoutNotMandatoryOptions()
+        {
+            //******* GIVEN
+            var myargs = new string[]
+            {
+                "list",
+                @"-folder=c:\temp"
+            };
+            this._Parser.ParseArguments(myargs);
+            bool isExecuted = false;
+            ListCommand parsedCmd = null;
+
+            //******* WHEN
+            this._Parser.RunCallbackFor<ListCommand>(x => { isExecuted = true; parsedCmd = x; });
+
+            //******* ASSERT
+            Assert.That(this._Parser.HasError, Is.EqualTo(false));
+            Assert.That(isExecuted, Is.EqualTo(true));
+            Assert.False(parsedCmd == null);
+            Assert.False(parsedCmd.IsVerbose);
+            Assert.That(parsedCmd.Folder, Is.EqualTo(@"c:\temp"));
+            Assert.True(string.IsNullOrEmpty(parsedCmd.PackageNameFilter));
+            Assert.Pass();
+        }
+
+        #endregion
+
+        #region Test on CaseWhen Method
+        [Test]
+        public void CaseWhen_UsingCommandWithoutNotMandatoryOptions()
+        {
+            //******* GIVEN
+            var myargs = new string[]
+            {
+                "list",
+                @"-folder=c:\temp"
+            };
+            this._Parser.ParseArguments(myargs);
+            bool isExecuted = false;
+            ListCommand parsedCmd = null;
+
+            //******* WHEN
+            var exitCode = this._Parser.CaseWhen<ListCommand>(x => { isExecuted = true; parsedCmd = x; }).Return();
+
+            //******* ASSERT
+            Assert.That(this._Parser.HasError, Is.EqualTo(false));
+            Assert.That(exitCode, Is.EqualTo(0));
+            Assert.That(isExecuted, Is.EqualTo(true));
+            Assert.False(parsedCmd == null);
+            Assert.False(parsedCmd.IsVerbose);
+            Assert.That(parsedCmd.Folder, Is.EqualTo(@"c:\temp"));
+            Assert.True(string.IsNullOrEmpty(parsedCmd.PackageNameFilter));
+            Assert.Pass();
+        }
+
+        #endregion
     }
 }
