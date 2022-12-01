@@ -119,7 +119,7 @@ steps:
       publishLocation: "Container"
 
   - task: DownloadSecureFile@1
-    ame: nugetOrgKey
+    name: nugetOrgKey
     displayName: "Download Nuget Api Key"
     inputs:
       secureFile: "Nuget.apikey.txt"
