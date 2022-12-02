@@ -8,6 +8,8 @@ namespace CliArgumentParser.Tests
     {
         ICommandStringConverter _Converter;
 
+        #region Tests on DefinitionToString Method
+
         [Test]
         public void DefinitionToString_ReturnsTitleAndDescriptionAmdAvailableOptions()
         {
@@ -34,6 +36,9 @@ Options:
             Assert.Pass();
         }
 
+        #endregion
+
+        #region Tests on OptionsToString Method
         [Test]
         public void OptionsToString_ReturnsAvailableOptions()
         {
@@ -57,7 +62,9 @@ Options:
             Assert.That(options, Is.EqualTo(expectedOptionsString));
             Assert.Pass();
         }
+        #endregion
 
+        #region Tests on StatementToString Method
         [Test]
         public void StatementToString_ReturnsAvailableOptions()
         {
@@ -77,6 +84,72 @@ Options:
             Assert.That(convertedString, Is.Not.Null);
             Assert.That(convertedString.Length, Is.Not.EqualTo(0));
             Assert.That(convertedString, Is.EqualTo(expectedString));
+            Assert.Pass();
+        }
+
+        [Test]
+        public void StatementToString_IgnoreNotMandatoryOptionsThatAreNotSet()
+        {
+            //******* GIVEN
+            var cmd = new ListCommand();
+            cmd.PackageNameFilter = "";
+            cmd.Folder = @"c:\Temp\Test";
+            var expectedString = @"list -folder=c:\Temp\Test ";
+
+            //******* WHEN
+            this._Converter = new CommandStringConverter(cmd);
+            var convertedString = this._Converter.StatementToString();
+
+            //******* ASSERT
+            Assert.That(convertedString, Is.Not.Null);
+            Assert.That(convertedString.Length, Is.Not.EqualTo(0));
+            Assert.That(convertedString, Is.EqualTo(expectedString));
+            Assert.Pass();
+        }
+
+
+        [Test]
+        public void StatementToString_IgnoreNotMandatoryBooleanOptionsThatAreFalse()
+        {
+            //******* GIVEN
+            var cmd = new ListCommand();
+            cmd.PackageNameFilter = "";
+            cmd.Folder = @"c:\Temp\Test";
+            cmd.IsVerbose = false;
+            var expectedString = @"list -folder=c:\Temp\Test ";
+        
+            //******* WHEN
+            this._Converter = new CommandStringConverter(cmd);
+            var convertedString = this._Converter.StatementToString();
+
+            //******* ASSERT
+            Assert.That(convertedString, Is.Not.Null);
+            Assert.That(convertedString.Length, Is.Not.EqualTo(0));
+            Assert.That(convertedString, Is.EqualTo(expectedString));
+            Assert.Pass();
+        }
+
+        #endregion
+
+        [Test]
+        public void UsageToString_ReturnsTitleAndDescriptionAndExamples_IgnoringNotMandatoryOptions()
+        {
+            //******* GIVEN
+            var cmd = new ListCommand();
+
+            //******* WHEN
+            this._Converter = new CommandStringConverter(cmd);
+            var definition = Environment.NewLine.ToString() + this._Converter.UsageToString();
+
+            //******* ASSERT
+            Assert.That(definition, Is.Not.Null);
+            Assert.That(definition.Length, Is.Not.EqualTo(0));
+            var testString = definition.Split("Example:", 2)[1];
+            var expectedString = @" List with no filter
+list -folder=C:\Temp 
+---------------------------------------------------------------
+";
+            Assert.That(testString, Is.EqualTo(expectedString));
             Assert.Pass();
         }
     }

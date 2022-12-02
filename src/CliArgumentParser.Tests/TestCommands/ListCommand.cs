@@ -79,9 +79,12 @@ namespace CliArgumentParser.Tests.TestCommands
         /// <inheritdoc></inheritdoc>
         public override List<CliCommandExample> Examples()
         {
+            var cmd1 = new ListCommand();
+            cmd1.SetDefaultValues();
+            cmd1.Folder = @"C:\Temp";
             return new List<CliCommandExample>()
             {
-                new CliCommandExample("LIst with no filter", new ListCommand()),
+                new CliCommandExample("List with no filter", cmd1),
             };
         }
     }
