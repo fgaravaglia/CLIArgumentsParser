@@ -72,8 +72,6 @@ namespace CliArgumentParser.Validation
                             throw new WrongOptionUsageException(cmd.Verb, listAttr.Name, $"Value {values.ToString()} is not valid for List of values separated by {listAttr.ListValueSeparator}");
                         if (listAttr.IsMandatory && !values.Any())
                             throw new WrongOptionUsageException(cmd.Verb, listAttr.Name, "Option is Mandatory");
-                        // if (listAttr.ValidValues.Any() && values.Any())
-                        //     throw new WrongOptionUsageException(cmd.Verb, listAttr.Name, $"Value is not valid for List of values");
                     }
                     else
                     { 

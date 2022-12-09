@@ -30,7 +30,7 @@ namespace CliArgumentParser.Decorator
             : base(name, descr, isMandatory, Array.Empty<string>())
         {
             if(String.IsNullOrEmpty(separator))
-            throw new ArgumentNullException(nameof(separator));
+                throw new ArgumentNullException(nameof(separator));
 
             this.ListValueSeparator = separator;
         }

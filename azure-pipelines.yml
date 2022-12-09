@@ -5,8 +5,6 @@ trigger:
       - CliArgumentParser-1.2
       - features/*
     exclude:
-      - develop
-      - release-candidate
       - CliArgumentParser-1.1
   paths:
     include:
@@ -32,10 +30,10 @@ parameters:
     default: 1
   - name: MinorVersion
     displayName: "Minor Version"
-    default: 2
+    default: 3
   - name: PatchVersion
     displayName: "Patch Version"
-    default: 2
+    default: 0
   - name: authors
     displayName: "Names of authors of the target package"
     default: "FG"
