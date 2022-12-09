@@ -32,6 +32,9 @@ parameters:
   - name: MinorVersion
     displayName: "Minor Version"
     default: 2
+  - name: PatchVersion
+    displayName: "Patch Version"
+    default: 2
   - name: authors
     displayName: "Names of authors of the target package"
     default: "FG"
@@ -49,7 +52,7 @@ parameters:
 variables:
   buildConfiguration: Release
   targetFramework: "6.x"
-  nugetVersion: ${{ parameters.MajorVersion }}.${{ parameters.MinorVersion }}.$(Build.BuildId)
+  nugetVersion: ${{ parameters.MajorVersion }}.${{ parameters.MinorVersion }}..${{ parameters.PatchVersion }}$(Build.BuildId)
   testReportFileName: cobertura.xml
 
 steps:
@@ -88,6 +91,7 @@ steps:
       projName: CliArgumentParser
       MajorVersion: ${{ parameters.MajorVersion }}
       MinorVersion: ${{ parameters.MinorVersion }}
+      PatchVersion: ${{ parameters.PatchVersion }}
       buildNumber: $(Build.BuildId)
 
   - template: .\devops\templates\dotnet-build.yaml

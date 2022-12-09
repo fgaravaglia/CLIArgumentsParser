@@ -106,6 +106,12 @@ namespace CliArgumentParser
             return String.IsNullOrEmpty(stringValue) ? 0.0 : Convert.ToDouble(stringValue);
         }
 
+        protected List<string> GetListOfStringArgumentValue<TSource>(Expression<Func<TSource, IEnumerable<string>>> propertyLambda, string separator = ";") where TSource : CliCommand
+        {
+            var stringValue = GetArgumentValue<TSource, IEnumerable<string>>(propertyLambda);
+            return String.IsNullOrEmpty(stringValue) ? new List<string>() : stringValue.Split(separator).ToList();
+        }
+
         #endregion
 
         #region Private Methods
