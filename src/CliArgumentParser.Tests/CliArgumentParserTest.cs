@@ -241,23 +241,23 @@ namespace CliArgumentParser.Tests
             Assert.Pass();
         }
 
-        [Test]
-        public void ParseArguments_WithLIstOfValues_HasNoErrors()
-        {
-            //******* GIVEN
-            var myargs = new string[]
-            {
-                "test",
-                @"-values=1;2;3"
-            };
+        // [Test]
+        // public void ParseArguments_WithLIstOfValues_HasNoErrors()
+        // {
+        //     //******* GIVEN
+        //     var myargs = new string[]
+        //     {
+        //         "test",
+        //         @"-values=1;2;3"
+        //     };
 
-            //******* WHEN
-            this._Parser.ParseArguments(myargs);
+        //     //******* WHEN
+        //     this._Parser.ParseArguments(myargs);
 
-            //******* ASSERT
-            Assert.That(this._Parser.HasError, Is.EqualTo(false));
-            Assert.Pass();
-        }
+        //     //******* ASSERT
+        //     Assert.That(this._Parser.HasError, Is.EqualTo(false));
+        //     Assert.Pass();
+        // }
 
         [Test]
         public void ParseArguments_WithLIstOfValues_WithNoSeprator_HasErrors()
@@ -432,33 +432,33 @@ namespace CliArgumentParser.Tests
             Assert.Pass();
         }
 
-        [Test]
-        public void CaseWhen_UsingCommandWithListOption()
-        {
-            //******* GIVEN
-            var myargs = new string[]
-            {
-                "test",
-                @"-values=1;2;3"
-            };
-            this._Parser.ParseArguments(myargs);
-            bool isExecuted = false;
-            TestWithListOfValues parsedCmd = null;
+        // [Test]
+        // public void CaseWhen_UsingCommandWithListOption()
+        // {
+        //     //******* GIVEN
+        //     var myargs = new string[]
+        //     {
+        //         "test",
+        //         @"-values=1;2;3"
+        //     };
+        //     this._Parser.ParseArguments(myargs);
+        //     bool isExecuted = false;
+        //     TestWithListOfValues parsedCmd = null;
 
-            //******* WHEN
-            var exitCode = this._Parser.CaseWhen<TestWithListOfValues>(x => { isExecuted = true; parsedCmd = x; }).Return();
+        //     //******* WHEN
+        //     var exitCode = this._Parser.CaseWhen<TestWithListOfValues>(x => { isExecuted = true; parsedCmd = x; }).Return();
 
-            //******* ASSERT
-            Assert.That(this._Parser.HasError, Is.EqualTo(false), "Parser has failed!");
-            Assert.That(exitCode, Is.EqualTo(0), "Wrong exit Code");
-            Assert.That(isExecuted, Is.EqualTo(true), "Wrong Behaviour: lambda has not been executed");
-            Assert.IsNotNull(parsedCmd);
-            Assert.That(parsedCmd.Values.Count(), Is.EqualTo(3), "List has been parsed with errors");
-            Assert.True(parsedCmd.Values.ToList().Contains("1"), "List has been parsed with errors: missing element 1");
-            Assert.True(parsedCmd.Values.ToList().Contains("2"), "List has been parsed with errors: missing element 2");
-            Assert.True(parsedCmd.Values.ToList().Contains("3"), "List has been parsed with errors: missing element 3");
-            Assert.Pass();
-        }
+        //     //******* ASSERT
+        //     Assert.That(this._Parser.HasError, Is.EqualTo(false), "Parser has failed!");
+        //     Assert.That(exitCode, Is.EqualTo(0), "Wrong exit Code");
+        //     Assert.That(isExecuted, Is.EqualTo(true), "Wrong Behaviour: lambda has not been executed");
+        //     Assert.IsNotNull(parsedCmd);
+        //     Assert.That(parsedCmd.Values.Count(), Is.EqualTo(3), "List has been parsed with errors");
+        //     Assert.True(parsedCmd.Values.ToList().Contains("1"), "List has been parsed with errors: missing element 1");
+        //     Assert.True(parsedCmd.Values.ToList().Contains("2"), "List has been parsed with errors: missing element 2");
+        //     Assert.True(parsedCmd.Values.ToList().Contains("3"), "List has been parsed with errors: missing element 3");
+        //     Assert.Pass();
+        // }
 
         #endregion
     }
