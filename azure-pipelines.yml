@@ -3,6 +3,7 @@ trigger:
     include:
       - master
       - CliArgumentParser-1.2
+      - features/*
     exclude:
       - develop
       - release-candidate
@@ -52,7 +53,7 @@ parameters:
 variables:
   buildConfiguration: Release
   targetFramework: "6.x"
-  nugetVersion: ${{ parameters.MajorVersion }}.${{ parameters.MinorVersion }}..${{ parameters.PatchVersion }}$(Build.BuildId)
+  nugetVersion: ${{ parameters.MajorVersion }}.${{ parameters.MinorVersion }}.${{ parameters.PatchVersion }}.$(Build.BuildId)
   testReportFileName: cobertura.xml
 
 steps:
