@@ -95,10 +95,23 @@ public override void ParseArgument(string[] tokens)
             }
         }
 ```
-## Bollean Option
+## Option with Domain Values
+to set up an option with predefined values, you have to decorate it as follow:
+
+```c#
+        [Option(OPT_DOMAIN, "Domain", isMandatory: true, domain: new string[]{"VAL1", "VAL2", "VAL3"})]
+        public string Domain
+        {
+            get { return this.GetArgumentValue<TestWithLookupValue, string>(x => x.Domain); }
+            set { this.AddOrUpdateArgument<TestWithLookupValue, string>(x => x.Domain, value); }
+        }
+```
+
+## Boolean Option
 to use boolean options, use the following approach.
 
 <b>Define the option as boolean</b>
+
 ```c#
         [Option(OPT_VERBOSE, "Verbosity Level", isMandatory: true)]
         public bool IsVerbose
@@ -109,6 +122,7 @@ to use boolean options, use the following approach.
 ```
 
 <b>Set defaults</b>
+
 ```c#
         public override void SetDefaultValues()
         {

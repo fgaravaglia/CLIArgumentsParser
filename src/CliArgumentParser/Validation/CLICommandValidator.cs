@@ -52,23 +52,40 @@ namespace CliArgumentParser.Validation
                                         .ToList();
             foreach (var prop in optionProperties)
             {
-                // get value
-                string propValueString = GetPropertyValueAsString(cmd, prop);
-
                 // get decorators
                 var attributes = prop.ExtractDecoratorsFromProperty();
 
                 foreach (var a in attributes)
                 {
-                    if (a.GetType() != typeof(OptionAttribute))
+                    if (a.GetType() != typeof(OptionAttribute) && a.GetType() != typeof(OptionListAttribute))
                         throw new WrongOptionUsageException(cmd.Verb, a.GetType());
-                        
-                    OptionAttribute attribute = a;
-                    if (attribute.IsMandatory && String.IsNullOrEmpty(propValueString))
-                        throw new WrongOptionUsageException(cmd.Verb, attribute.Name, "Option is Mandatory");
 
-                    if (attribute.ValidValues.Any() && !String.IsNullOrEmpty(propValueString) && !attribute.ValidValues.Contains(propValueString))
-                        throw new WrongOptionUsageException(cmd.Verb, attribute.Name, $"Value {propValueString} is not valid for List of values");
+                    if (a.GetType() == typeof(OptionListAttribute))
+                    {
+                        OptionListAttribute listAttr = (OptionListAttribute)a;
+                        // cast the right value
+                        var values = new List<string>();
+                        object? propValue = prop.GetValue(cmd, null);
+                        if (propValue != null)
+                            values = (List<string>)propValue;
+                        if (values.Count <= 1)
+                            throw new WrongOptionUsageException(cmd.Verb, listAttr.Name, $"Value {values.ToString()} is not valid for List of values separated by {listAttr.ListValueSeparator}");
+                        if (listAttr.IsMandatory && !values.Any())
+                            throw new WrongOptionUsageException(cmd.Verb, listAttr.Name, "Option is Mandatory");
+                    }
+                    else
+                    { 
+                        OptionAttribute attribute = a;
+                        // get value
+                        string propValueString = GetPropertyValueAsString(cmd, prop);
+                        // validate
+                        if (attribute.IsMandatory && String.IsNullOrEmpty(propValueString))
+                            throw new WrongOptionUsageException(cmd.Verb, attribute.Name, "Option is Mandatory");
+
+                        if (attribute.ValidValues.Any() && !String.IsNullOrEmpty(propValueString) && !attribute.ValidValues.Contains(propValueString))
+                            throw new WrongOptionUsageException(cmd.Verb, attribute.Name, $"Value {propValueString} is not valid for List of values");
+                        
+                    }
                 }
 
             }

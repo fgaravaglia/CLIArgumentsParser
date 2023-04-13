@@ -7,7 +7,7 @@ using System.Text;
 
 namespace CliArgumentParser
 {
-    class AssemblyDecorators
+    interface AssemblyDecorators
     {
     }
 }
