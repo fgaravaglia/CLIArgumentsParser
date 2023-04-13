@@ -57,8 +57,8 @@ extends:
         publishRequired: false
         isWebProj: False
     ListOfProjToTest:
-      - path: src/CliArgumentParser
-        name: CliArgumentParser
+      - path: src/CliArgumentParser.Tests
+        name: CliArgumentParser.Tests
     # list of packages to push on nuget repo
     ListOfProjToPublish:
       - path: src/CliArgumentParser
