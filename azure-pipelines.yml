@@ -49,7 +49,7 @@ extends:
     SonarSettings:
       ProjectKey: fgaravaglia_CLIArgumentsParser
       ProjectName: CLIArgumentsParser
-      TestReportFileName: cobertura.xml
+      TestReportFileName: coverage.cobertura.xml
     # list of projects to build
     ListOfProjToBuild:
       - path: src/CliArgumentParser.Tests
