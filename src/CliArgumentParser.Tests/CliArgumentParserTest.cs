@@ -24,6 +24,7 @@ namespace CliArgumentParser.Tests
             factory.RegisterCommand<TestWithFlagCommand>("flag");
             factory.RegisterCommand<ListCommand>("list");
             factory.RegisterCommand<TestWithListOfValues>("test");
+            factory.RegisterCommand<TestWithLookupValue>("testWithDomainValue");
             this._Parser = factory.InstanceFromFactory().UsingDefaultErrorManagement();
         }
 
@@ -277,6 +278,46 @@ namespace CliArgumentParser.Tests
             Assert.IsInstanceOf<WrongOptionUsageException>(this._Parser.OccurredError);
             Assert.True(this._Parser.OccurredError.Message.StartsWith("Wrong Usage: invalid option -values for test", StringComparison.InvariantCultureIgnoreCase), 
                         $"wrong Exception Message. Found <{this._Parser.OccurredError.Message}>");
+            Assert.Pass();
+        }
+
+
+        [Test]
+        public void ParseArguments_WithDomainValue_WithNotValidValue_HasErrors()
+        {
+            //******* GIVEN
+            var myargs = new string[]
+            {
+                "testWithDomainValue",
+                @"-domain=pippo"
+            };
+
+            //******* WHEN
+            this._Parser.ParseArguments(myargs);
+
+            //******* ASSERT
+            Assert.That(this._Parser.HasError, Is.EqualTo(true));
+            Assert.IsInstanceOf<WrongOptionUsageException>(this._Parser.OccurredError);
+            Assert.True(this._Parser.OccurredError.Message.StartsWith("Wrong Usage: invalid option -domain for testWithDomainValue - Value PIPPO is not valid for List of values", StringComparison.InvariantCultureIgnoreCase),
+                        $"wrong Exception Message. Found <{this._Parser.OccurredError.Message}>");
+            Assert.Pass();
+        }
+
+        [Test]
+        public void ParseArguments_WithDomainValue_WithValidValue_HasNoErrors()
+        {
+            //******* GIVEN
+            var myargs = new string[]
+            {
+                "testWithDomainValue",
+                @"-domain=VAL1"
+            };
+
+            //******* WHEN
+            this._Parser.ParseArguments(myargs);
+
+            //******* ASSERT
+            Assert.That(this._Parser.HasError, Is.EqualTo(false));
             Assert.Pass();
         }
         #endregion

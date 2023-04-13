@@ -12,20 +12,12 @@
     <Company>Innova Solutions</Company>
     <Authors>FG</Authors>
     <Description>Library to parse command line arguments</Description>
-    <Copyright>FG 2022</Copyright>
-    <Version>1.2.0.0</Version>
-    <VersionNumber>1.2.0.0</VersionNumber>
+    <Copyright>FG 2022-2023</Copyright>
     <PackageProjectUrl>https://github.com/fgaravaglia/CLIArgumentsParser</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/fgaravaglia/CLIArgumentsParser</RepositoryUrl>
-    <PackageReleaseNotes>
-- Minor issues solved
-- Test Coverage increased
-- README file updated with usage details and samples
-- LICENSE specification
-    </PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
